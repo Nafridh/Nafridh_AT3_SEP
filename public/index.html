@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<meta http-equiv="Content-Security-Policy" content="script-src 'self';">
+<link rel="stylesheet" href="css/style.css" />
+<title>Luna Library - Home</title>
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" type="image/x-icon" href="images/favicon.png">
+<meta name="theme-color" content="#14E6DD" />
+</head>
+
+<body>
+    <main>
+        <nav>
+        <img src="images/logo.png"/>
+        <h1>Luna Library</h1>
+        <ul class="topnav">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="books.html">Browse Books</a></li>
+        <li><a href="about.html">About</a></li>
+        </ul>
+        </nav>
+        <h2>Featured Books</h2>
+        <div class="container">
+
+        </div>
+            <section id="featured">
+                <div id="carousel"> <!-- Placeholder for book carousel --> </div>
+            </section>
+            <h6>
+                Disclaimer: Luna Library is a personal project intended for book tracking and discovery. We do not host or distribute copyrighted material?<br><br>
+                
+                Copyright 2025 Luna Librarians. All rights reserved.</h6>
+        </main>
+        <div id="bookModal" class="modal">
+            <div class="modal-content">
+                <span class="close-btn">&times;</span>
+                <h2 id="modal-title"></h2>
+                <img id="modal-cover" src="" alt="Book Cover">
+                <p id="modal-author"></p>
+                <p id="modal-description"></p>
+                <p id="modal-genre"></p>
+                <p id="modal-pages"></p> <!-- Added for pages -->
+                <p id="modal-rating"></p> <!-- Added for rating -->
+            </div>
+        </div>
+    <script type="module" src="js/app.js"></script>
+    </body>
+    
+    </html>
