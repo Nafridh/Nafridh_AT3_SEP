@@ -1,0 +1,115 @@
+BEGIN BookNest_Main
+    CALL AuthenticateUser
+    CALL ShowDashboard
+
+    IF user_role = "teacher" THEN
+        CALL TeacherDashboard
+    ELSE
+        CALL StudentDashboard
+    ENDIF
+END
+
+SUBROUTINE AuthenticateUser
+    DISPLAY "Enter Username: "
+    INPUT username
+    DISPLAY "Enter Password: "
+    INPUT password
+
+    IF CheckCredentials(username, password) = TRUE THEN
+        SET user_role ← GetUserRole(username)
+    ELSE
+        DISPLAY "Invalid login"
+        CALL AuthenticateUser
+    ENDIF
+END
+
+SUBROUTINE ShowDashboard
+    DISPLAY "Welcome to BookNest!"
+    DISPLAY "1. Vote for next book"
+    DISPLAY "2. Complete a reading challenge"
+    DISPLAY "3. View reading log"
+    IF user_role = "teacher" THEN
+        DISPLAY "4. Create new poll"
+        DISPLAY "5. Reset group points"
+        DISPLAY "6. Create challenge"
+    ENDIF
+END
+
+SUBROUTINE TeacherDashboard
+    INPUT choice
+    CASE choice OF
+        4: CALL CreatePoll
+        5: CALL ResetPoints
+        6: CALL CreateChallenge
+    ENDCASE
+END
+
+SUBROUTINE StudentDashboard
+    INPUT choice
+    CASE choice OF
+        1: CALL CastVote
+        2: CALL JoinChallenge
+        3: CALL ViewReadingLog
+    ENDCASE
+END
+
+SUBROUTINE CreatePoll
+    DISPLAY "Enter poll options (book titles)"
+    INPUT bookOptions[]
+    DISPLAY "Enter deadline (YYYY-MM-DD):"
+    INPUT deadline
+    STORE poll in database with bookOptions and deadline
+    DISPLAY "Poll created!"
+END
+
+SUBROUTINE CastVote
+    DISPLAY "Available polls:"
+    DISPLAY PollOptions
+    DISPLAY "Enter book ID to vote:"
+    INPUT book_id
+    STORE vote with user_id and book_id
+    DISPLAY "Vote cast!"
+END
+
+SUBROUTINE CreateChallenge
+    DISPLAY "Enter Challenge Name:"
+    INPUT name
+    DISPLAY "Enter Description:"
+    INPUT description
+    DISPLAY "Enter Points:"
+    INPUT points
+    STORE challenge in database
+    DISPLAY "Challenge Created!"
+END
+
+SUBROUTINE JoinChallenge
+    DISPLAY "Available Challenges:"
+    DISPLAY ChallengeList
+    DISPLAY "Enter Challenge ID to join:"
+    INPUT challenge_id
+    ASSIGN challenge to user_id
+    DISPLAY "Challenge Joined!"
+END
+
+SUBROUTINE ViewReadingLog
+    FETCH reading log for user_id
+    DISPLAY entries sorted by date
+END
+
+SUBROUTINE ResetPoints
+    FOR EACH group IN GroupList DO
+        SET group.points ← 0
+    ENDFOR
+    DISPLAY "All points reset."
+END
+
+SUBROUTINE AddEntryToReadingLog
+    DISPLAY "Enter Book ID:"
+    INPUT book_id
+    DISPLAY "Pages Read:"
+    INPUT pages_read
+    DISPLAY "Date:"
+    INPUT date
+    STORE reading log entry with user_id, book_id, pages_read, and date
+    DISPLAY "Entry added!"
+END
