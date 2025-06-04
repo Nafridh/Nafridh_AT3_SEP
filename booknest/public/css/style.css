@@ -1,25 +1,39 @@
-.popup {
-    position: fixed;
-    top: 30%;
-    left: 50%;
-    transform: translate(-50%, -30%);
-    background: white;
-    border: 2px solid #14E6DD;
-    padding: 1rem;
-    z-index: 1000;
-    display: none;
-}
-.popup-content {
-    text-align: center;
-}
-.popup.hidden {
-    display: none;
-}
-
 .quest-card {
     border: 1px solid #ccc;
     padding: 1rem;
     margin: 0.5rem;
     border-radius: 8px;
     background-color: #f9f9f9;
+}
+
+.popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+
+.popup-content {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    width: 300px;
+    max-width: 90%;
+    text-align: center;
+}
+
+.popup-close {
+    float: right;
+    font-size: 20px;
+    cursor: pointer;
+}
+
+.hidden {
+    display: none;
 }

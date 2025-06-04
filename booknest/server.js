@@ -18,7 +18,7 @@ const db = new sqlite3.Database(path.join(__dirname, ".database", "database.db")
 });
 
 app.get('/quests', (req, res) => {
-    db.all(`SELECT quest_id, title, points FROM Quests`, [], (err, rows) => {
+    db.all(`SELECT quest_id, title, description, points FROM Quests`, [], (err, rows) => {
         if (err) {
             console.error("❌ Error fetching quests:", err.message);
             return res.status(500).json({ error: "Database error" });
@@ -47,7 +47,7 @@ app.get("/leaderboard", (req, res) => {
 });
 
 app.get('/quests', (req, res) => {
-    db.all(`SELECT quest_id, title, points FROM Quests`, [], (err, rows) => {
+    db.all(`SELECT quest_id, title, description, points FROM Quests`, [], (err, rows) => {
         if (err) return res.status(500).json({ error: err.message });
         res.json(rows);
     });
@@ -125,7 +125,7 @@ app.post('/complete-quest', (req, res) => {
 });
 
 app.get('/quests', (req, res) => {
-    db.all(`SELECT quest_id, title, points FROM Quests`, [], (err, rows) => {
+    db.all(`SELECT quest_id, title, points, description FROM Quests`, [], (err, rows) => {
         if (err) {
             console.error(err.message);
             return res.status(500).json({ error: "Database error" });
