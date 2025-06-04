@@ -1,5 +1,11 @@
 style.css
 index.html
+dashboard.html
+voting.html
+quest.html
+leaderboard.html
+login.html
+register.html
 index.js
 app.js
 serviceWorker.js

@@ -27,11 +27,11 @@ SUBROUTINE ShowDashboard
     DISPLAY "Welcome to BookNest!"
     DISPLAY "1. Vote for next book"
     DISPLAY "2. Complete a reading challenge"
-    DISPLAY "3. View reading log"
+    DISPLAY "3. View points Leaderboard"
     IF user_role = "teacher" THEN
         DISPLAY "4. Create new poll"
-        DISPLAY "5. Reset group points"
-        DISPLAY "6. Create challenge"
+        DISPLAY "5. Create challenge"
+        DISPLAY "6. Reset group points"
     ENDIF
 END
 
@@ -49,7 +49,7 @@ SUBROUTINE StudentDashboard
     CASE choice OF
         1: CALL CastVote
         2: CALL JoinChallenge
-        3: CALL ViewReadingLog
+        3: CALL ViewGuildPoints
     ENDCASE
 END
 
