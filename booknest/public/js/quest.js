@@ -37,10 +37,10 @@ document.addEventListener("DOMContentLoaded", () => {
             data.forEach(quest => {
                 const div = document.createElement('div');
                 div.classList.add('quest');
-                div.innerHTML = `<strong>${quest.title}</strong> — ${quest.points_awarded} points`;
+                div.innerHTML = `<strong>${quest.title}</strong> — ${quest.points} points`;
                 div.onclick = () => {
                     popupTitle.textContent = quest.title;
-                    popupDesc.textContent = `Earn ${quest.points_awarded} points by completing this quest.`;
+                    popupDesc.textContent = `Earn ${quest.points} points by completing this quest.`;
                     selectedQuestId = quest.quest_id;
                     popup.classList.remove('hidden');
                     popup.style.display = 'block';
@@ -86,7 +86,7 @@ document.addEventListener("DOMContentLoaded", () => {
             data.forEach(quest => {
                 const questItem = document.createElement('div');
                 questItem.className = "quest-card";
-                questItem.innerHTML = `<strong>${quest.title}</strong> — ${quest.points_awarded} points`;
+                questItem.innerHTML = `<strong>${quest.title}</strong> — ${quest.points} points`;
                 questList.appendChild(questItem);
             });
         })

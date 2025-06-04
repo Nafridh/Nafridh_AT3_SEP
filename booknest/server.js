@@ -91,6 +91,39 @@ app.post('/complete-quest', (req, res) => {
         });
     });
 });
+
+app.post('/complete-quest', (req, res) => {
+    const { user_id, quest_id, points } = req.body;
+
+    if (!user_id || !quest_id || !points) {
+        return res.status(400).json({ error: "Missing required fields" });
+    }
+
+    // Check if quest was already completed
+    db.get(`SELECT * FROM QuestCompletions WHERE user_id = ? AND quest_id = ?`, [user_id, quest_id], (err, row) => {
+        if (row) {
+            return res.status(400).json({ error: "Quest already completed" });
+        }
+
+        db.serialize(() => {
+            // 1. Log the quest
+            db.run(`INSERT INTO QuestCompletions (user_id, quest_id) VALUES (?, ?)`, [user_id, quest_id]);
+
+            // 2. Update user points
+            db.run(`UPDATE Users SET points = points + ? WHERE user_id = ?`, [points, user_id]);
+
+            // 3. Update guild points
+            db.get(`SELECT guild_id FROM Users WHERE user_id = ?`, [user_id], (err, row) => {
+                if (row) {
+                    db.run(`UPDATE Guilds SET total_points = total_points + ? WHERE guild_id = ?`, [points, row.guild_id]);
+                }
+            });
+
+            res.json({ success: true });
+        });
+    });
+});
+
 app.get('/quests', (req, res) => {
     db.all(`SELECT quest_id, title, points FROM Quests`, [], (err, rows) => {
         if (err) {
