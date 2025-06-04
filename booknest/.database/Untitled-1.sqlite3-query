@@ -1,0 +1,85 @@
+-- database: ./database.db
+
+SELECT * FROM Users
+ORDER BY `user_id` DESC;
+
+-- Create Users table
+CREATE TABLE Users (
+    user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    username TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    guild_id INTEGER,
+    is_admin BOOLEAN DEFAULT 0,
+    total_points INTEGER DEFAULT 0,
+    FOREIGN KEY (guild_id) REFERENCES Guilds(guild_id)
+);
+
+-- Create Guilds table
+CREATE TABLE Guilds (
+    guild_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    name TEXT UNIQUE NOT NULL,
+    total_points INTEGER DEFAULT 0
+);
+
+-- Create Polls table
+CREATE TABLE Polls (
+    poll_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    description TEXT,
+    start_date TEXT,
+    end_date TEXT,
+    active BOOLEAN DEFAULT 1
+);
+
+-- Create Books table (for voting)
+CREATE TABLE Books (
+    book_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    author TEXT,
+    poll_id INTEGER,
+    FOREIGN KEY (poll_id) REFERENCES Polls(poll_id)
+);
+
+-- Create Votes table
+CREATE TABLE Votes (
+    vote_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    book_id INTEGER,
+    poll_id INTEGER,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id),
+    FOREIGN KEY (book_id) REFERENCES Books(book_id),
+    FOREIGN KEY (poll_id) REFERENCES Polls(poll_id)
+);
+
+-- Create Quests table
+CREATE TABLE Quests (
+    quest_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    description TEXT,
+    points INTEGER NOT NULL,
+    created_by INTEGER,
+    FOREIGN KEY (created_by) REFERENCES Users(user_id)
+);
+
+-- Create QuestCompletions table
+CREATE TABLE QuestCompletions (
+    completion_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    quest_id INTEGER,
+    user_id INTEGER,
+    completion_date TEXT,
+    FOREIGN KEY (quest_id) REFERENCES Quests(quest_id),
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+);
+
+-- Points log (optional but good for debugging point system)
+CREATE TABLE PointsLog (
+    log_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    guild_id INTEGER,
+    source TEXT, -- e.g. "quest", "vote_bonus"
+    source_id INTEGER, -- quest_id or vote_id
+    points_awarded INTEGER,
+    timestamp TEXT DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id),
+    FOREIGN KEY (guild_id) REFERENCES Guilds(guild_id)
+);
