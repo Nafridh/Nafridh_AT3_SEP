@@ -1,0 +1,25 @@
+.popup {
+    position: fixed;
+    top: 30%;
+    left: 50%;
+    transform: translate(-50%, -30%);
+    background: white;
+    border: 2px solid #14E6DD;
+    padding: 1rem;
+    z-index: 1000;
+    display: none;
+}
+.popup-content {
+    text-align: center;
+}
+.popup.hidden {
+    display: none;
+}
+
+.quest-card {
+    border: 1px solid #ccc;
+    padding: 1rem;
+    margin: 0.5rem;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}

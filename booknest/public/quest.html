@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+<meta http-equiv="Content-Security-Policy" content="script-src 'self';">
+<link rel="stylesheet" href="css/style.css" />
+<title>Book Nest - Quests</title>
+<link rel="manifest" href="manifest.json" />
+<link rel="icon" type="image/x-icon" href="images/favicon.png">
+<meta name="theme-color" content="#14E6DD" />
+</head>
+
+<body>
+    <main>
+        <nav>
+        <img src="images/logo.png"/>
+        <h1>Book Nest - Quests</h1>
+        <ul class="topnav">
+        <li><a href="index.html">Dashboard</a></li>
+        <li><a href="voting.html">Voting</a></li>
+        <li><a href="quest.html">Quests</a></li>
+        <li><a href="leaderboard.html">Guilds</a></li>
+        <li><a href="login.html">Logout</a></li>
+        </ul>
+        </nav>
+        <h2>Quests</h2>
+        <script src="js/quest.js"></script>
+    <div id="questList" class="container">
+    <!-- Quests will appear here -->
+    </div>
+
+        <!-- Popup -->
+<div id="popup" class="popup hidden">
+    <div class="popup-content">
+        <span id="popupClose">&times;</span>
+        <h3 id="popupTitle"></h3>
+        <p id="popupDescription"></p>
+        <button id="completeQuestBtn">Mark as Completed</button>
+    </div>
+</div>
+        </main>
+    <script type="module" src="js/app.js"></script>
+    </body>
+    
+    </html>
