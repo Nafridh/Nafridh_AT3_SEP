@@ -1,31 +1,43 @@
 const express = require("express");
-    const path = require("path");
-    const app = express();
-    app.use(express.static(path.join(__dirname,"public")));
-    app.get("/", function (req, res) {res.sendFile(path.join(__dirname,"public/index.html"));});
+const path = require("path");
+const sqlite3 = require("sqlite3").verbose();
 
-    app.listen(8000, () => console.log("Snape Server is running on Port 8000, visit http://localhost:8000/or http://127.0.0.1:8000 to access your website") );
+const app = express();
 
-// Get leaderboard
-app.get('/leaderboard', (req, res) => {
-db.all(`SELECT name, total_points FROM Guilds ORDER BY total_points DESC`, [], (err, rows) => {
-    if (err) return res.status(500).json({ error: err.message });
-    res.json(rows);
+// Middleware
+app.use(express.static(path.join(__dirname, "public")));
+app.use(express.json());
+
+// Connect to SQLite database
+const db = new sqlite3.Database(path.join(__dirname, ".database", "database.db"), sqlite3.OPEN_READWRITE, (err) => {
+    if (err) {
+        console.error("❌ Failed to connect to database:", err.message);
+    } else {
+        console.log("✅ Connected to SQLite database.");
+    }
 });
+
+// Routes
+app.get("/", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-    document.addEventListener("DOMContentLoaded", () => {
-    fetch('/leaderboard')
-        .then(res => res.json())
-        .then(data => {
-    const list = document.getElementById('leaderboard');
-    data.forEach((guild, index) => {
-        const li = document.createElement('li');
-        li.textContent = `${index + 1}. ${guild.name} — ${guild.total_points} points`;
-        list.appendChild(li);
-        });
-    })
-    .catch(err => {
-        console.error('Error loading leaderboard:', err);
+app.get("/leaderboard.html", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "leaderboard.html"));
+});
+
+app.get("/leaderboard", (req, res) => {
+    db.all(`SELECT name, total_points FROM Guilds ORDER BY total_points DESC`, [], (err, rows) => {
+        if (err) {
+            console.error("DB error:", err.message);
+            return res.status(500).json({ error: err.message });
+        }
+        res.json(rows);
     });
+});
+
+// Start server
+const PORT = 8000;
+app.listen(PORT, () => {
+    console.log(`🚀 Server running at http://localhost:8000`);
 });

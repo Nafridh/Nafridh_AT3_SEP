@@ -25,3 +25,9 @@ INSERT INTO Quests (title, description, points, created_by) VALUES
 ('Discuss your favourite character with your guild', 'One-time task', 15, 3);
 
 SELECT name, total_points FROM Guilds ORDER BY total_points DESC;
+
+-- Get user's guild_id
+SELECT guild_id FROM Users WHERE user_id = ?;
+
+-- Then update the guild's points
+UPDATE Guilds SET total_points = total_points + ? WHERE guild_id = ?;
