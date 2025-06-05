@@ -31,3 +31,15 @@ SELECT guild_id FROM Users WHERE user_id = ?;
 
 -- Then update the guild's points
 UPDATE Guilds SET total_points = total_points + ? WHERE guild_id = ?;
+
+INSERT INTO Polls (title, description, start_date, end_date, is_active)
+VALUES ('August 2025 Book Poll', 'Vote for your next read!', '2025-07-01', '2025-08-01', 2);
+
+SELECT poll_id FROM Polls WHERE title = 'August 2025 Book Poll';
+
+INSERT INTO Books (title, author, description, cover_url, poll_id)
+VALUES
+
+('1984', 'George Orwell', 'A dystopian novel about totalitarianism.', 'images/1984.jpg', 2),
+('To Kill a Mockingbird', 'Harper Lee', 'A story about justice and racial tension.', 'images/mockingbird.jpg', 2),
+('Pride and Prejudice', 'Jane Austen', 'A romantic novel about manners and marriage.', 'images/pride.jpg', 2);

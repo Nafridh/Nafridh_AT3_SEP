@@ -1,36 +1,53 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta http-equiv="X-UA-Compatible" content="ie=edge" />
-<meta http-equiv="Content-Security-Policy" content="script-src 'self';">
-<link rel="stylesheet" href="css/style.css" />
-<title>Book Nest - Dashboard</title>
-<link rel="manifest" href="manifest.json" />
-<link rel="icon" type="image/x-icon" href="images/favicon.png">
-<meta name="theme-color" content="#14E6DD" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Book Nest - Voting</title>
+    <link rel="stylesheet" href="css/style.css" />
 </head>
-
 <body>
     <main>
-        <nav>
-        <img src="images/logo.png"/>
-        <h1>Book Nest</h1>
+    <nav>
+        <img src="images/logo.png" alt="Book Nest Logo" />
+        <h1>Book Nest - Voting</h1>
         <ul class="topnav">
         <li><a href="index.html">Dashboard</a></li>
         <li><a href="voting.html">Voting</a></li>
         <li><a href="quest.html">Quests</a></li>
         <li><a href="leaderboard.html">Guilds</a></li>
-        <li><a href="login.html">Logout</a></li>
         </ul>
-        </nav>
-        <h2>Voting</h2>
-        <div class="container">
+        <div class="user-nav">
+        <span id="navUserName" class="username"></span>
+        <button id="logoutBtn">Logout</button>
         </div>
-        </main>
-    <script type="module" src="js/app.js"></script>
-    </body>
-    
-    </html>
+    </nav>
+
+        <section class="voting">
+        <h2>Vote for the Next Read!</h2>
+        <form id="voteForm">
+        <div id="bookList" class="book-grid"></div>
+        <button type="submit">Submit Vote</button>
+        </form>
+    </section>
+    </main>
+
+    <script type="module" src="js/voting.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const user = JSON.parse(localStorage.getItem('user'));
+
+        if (user && user.first_name) {
+        document.getElementById('navUserName').textContent = `Hello, ${user.first_name}`;
+        } else {
+        window.location.href = 'login.html';
+        }
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+        localStorage.removeItem('user');
+        window.location.href = 'login.html';
+        });
+    });
+    </script>
+</body>
+</html>

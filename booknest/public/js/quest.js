@@ -6,6 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const closeBtn = document.getElementById('popupClose');
     const completeBtn = document.getElementById('completeQuestBtn');
 
+
     let selectedQuestId = null;
     // Load and display quests
     fetch('/quests')
@@ -74,3 +75,8 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     };
 });
+
+document.addEventListener("DOMContentLoaded", async () => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    if (!user) return window.location.href = "login.html";
+    });

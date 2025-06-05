@@ -23,7 +23,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Optionally store user info
                 localStorage.setItem("user", JSON.stringify(data.user));
                 // Redirect to quest page or home page
-                window.location.href = "/quest.html";
+                window.location.href = "/index.html";
             } else {
                 errorMsg.textContent = data.error || "Login failed";
             }

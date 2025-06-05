@@ -92,6 +92,7 @@ app.post('/complete-quest', authenticateToken, (req, res) => {
             }
 
             const points = quest.points;
+            const date_completed = new Date().toISOString();
 
             db.serialize(() => {
                 // 1. Log the quest
@@ -120,6 +121,15 @@ app.post('/complete-quest', authenticateToken, (req, res) => {
                                     console.error("Failed to update guild points:", err.message);
                                     return res.status(500).json({ error: "Failed to update guild points" });
                                 }
+
+                                // 4. Log points earned in PointsLog
+                                db.run(`INSERT INTO PointsLog (user_id, quest_id, points_earned, date_completed) VALUES (?, ?, ?, ?)`,
+                                    [user_id, quest_id, points, date_completed], function(err) {
+                                        if (err) {
+                                            console.error("Failed to log points in PointsLog:", err.message);
+                                            // Not returning error here to avoid blocking success response
+                                        }
+                                    });
 
                                 res.json({ success: true, pointsEarned: points });
                             });
@@ -205,6 +215,33 @@ app.post('/login', (req, res) => {
     // ...
 });
 
+// Fetch active poll and books
+app.get('/api/active-poll', async (req, res) => {
+  const poll = await db.get(`SELECT * FROM Polls WHERE is_active = 1`);
+    if (!poll) return res.json({ poll: null, books: [] });
+
+  const books = await db.all(`SELECT * FROM Books WHERE poll_id = ?`, [poll.poll_id]);
+    res.json({ poll, books });
+});
+
+// Handle voting
+app.post('/api/vote', async (req, res) => {
+    const { user_id, book_id, poll_id } = req.body;
+    try {
+    const existingVote = await db.get(`SELECT * FROM Votes WHERE user_id = ? AND poll_id = ?`, [user_id, poll_id]);
+    if (existingVote) {
+        return res.status(400).json({ message: "You have already voted in this poll." });
+    }
+
+    await db.run(`INSERT INTO Votes (user_id, book_id, poll_id) VALUES (?, ?, ?)`, [user_id, book_id, poll_id]);
+    res.json({ message: "Your vote has been recorded!" });
+    } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Failed to vote." });
+    }
+});
+
+
 // Global error handler middleware
 app.use((err, req, res, next) => {
     console.error("Unhandled error:", err);
@@ -215,4 +252,82 @@ app.use((err, req, res, next) => {
 const PORT = 8000;
 app.listen(PORT, () => {
     console.log(`🚀 Server running at http://localhost:8000`);
+});
+
+// ✅ Route 1: Get Active Poll with Books
+app.get('/api/active-poll', (req, res) => {
+    const query = `
+    SELECT p.poll_id, p.title AS poll_title, p.description AS poll_description,
+            b.book_id, b.title, b.author, b.description AS book_description, b.cover_url
+    FROM Polls p
+    JOIN Books b ON p.poll_id = b.poll_id
+    WHERE p.active = 1
+    `;
+    db.all(query, [], (err, rows) => {
+    if (err) return res.status(500).json({ error: err.message });
+
+    if (rows.length === 0) return res.status(404).json({ message: 'No active poll found.' });
+
+    const poll = {
+        poll_id: rows[0].poll_id,
+        title: rows[0].poll_title,
+        description: rows[0].poll_description,
+        books: rows.map(row => ({
+        book_id: row.book_id,
+        title: row.title,
+        author: row.author,
+        description: row.book_description,
+        cover_url: row.cover_url
+        }))
+    };
+    res.json(poll);
+    });
+});
+
+// ✅ Route 2: Submit a Vote
+app.post('/api/vote', (req, res) => {
+    const { user_id, book_id, poll_id } = req.body;
+    if (!user_id || !book_id || !poll_id) {
+    return res.status(400).json({ error: 'Missing required vote data.' });
+    }
+
+  const checkQuery = `SELECT * FROM Votes WHERE user_id = ? AND poll_id = ?`;
+    db.get(checkQuery, [user_id, poll_id], (err, row) => {
+    if (err) return res.status(500).json({ error: err.message });
+    if (row) return res.status(400).json({ error: 'User has already voted in this poll.' });
+
+    const insertQuery = `INSERT INTO Votes (user_id, book_id, poll_id) VALUES (?, ?, ?)`;
+    db.run(insertQuery, [user_id, book_id, poll_id], function (err) {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json({ success: true, vote_id: this.lastID });
+    });
+    });
+});
+
+app.get('/api/active-poll', async (req, res) => {
+  db.get(`SELECT * FROM Polls WHERE active = 1 AND datetime('now') BETWEEN start_date AND end_date LIMIT 1`, (err, poll) => {
+    if (err || !poll) return res.json({ poll: null, books: [] });
+
+    db.all(`SELECT * FROM Books WHERE poll_id = ?`, [poll.poll_id], (err, books) => {
+        if (err) return res.status(500).json({ error: 'Could not fetch books.' });
+        res.json({ poll, books });
+    });
+    });
+});
+
+app.post('/api/vote', (req, res) => {
+    const { user_id, book_id, poll_id } = req.body;
+
+  db.get(`SELECT * FROM Votes WHERE user_id = ? AND poll_id = ?`, [user_id, poll_id], (err, row) => {
+    if (row) {
+        return res.json({ success: false, message: 'You have already voted.' });
+    }
+
+    db.run(`INSERT INTO Votes (user_id, book_id, poll_id) VALUES (?, ?, ?)`,
+        [user_id, book_id, poll_id],
+        (err) => {
+        if (err) return res.json({ success: false, message: 'Database error.' });
+        res.json({ success: true });
+        });
+    });
 });
