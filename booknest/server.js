@@ -1,7 +1,7 @@
 const express = require("express");
 const path = require("path");
 const sqlite3 = require("sqlite3").verbose();
-
+const bcrypt = require('bcrypt');
 const app = express();
 
 // Middleware
@@ -132,6 +132,62 @@ app.get('/quests', (req, res) => {
         }
         res.json(rows);
     });
+});
+
+// const bcrypt = require('bcrypt'); // Install with: npm install bcryptserver
+
+
+app.post('/register', (req, res) => {
+    const { email, first_name, last_name, password, is_admin, guild_id } = req.body;
+
+    if (!email || !first_name || !last_name || !password || guild_id == null || is_admin == null) {
+        return res.status(400).json({ success: false, error: "Missing required fields" });
+    }
+
+    // Step 1: Check if email already exists
+    db.get(`SELECT * FROM Users WHERE email = ?`, [email], (err, user) => {
+        if (err) return res.status(500).json({ success: false, error: "Database error" });
+        if (user) return res.status(400).json({ success: false, error: "Email already registered" });
+
+        // Step 2: Hash password
+        bcrypt.hash(password, 10, (err, hash) => {
+            if (err) return res.status(500).json({ success: false, error: "Error hashing password" });
+
+            // Step 3: Insert user
+            db.run(`
+                INSERT INTO Users (email, first_name, last_name, password, is_admin, guild_id, total_points)
+                VALUES (?, ?, ?, ?, ?, ?, 0)
+            `,
+            [email, first_name, last_name, hash, is_admin, guild_id],
+            function (err) {
+                if (err) return res.status(500).json({ success: false, error: "Failed to register user" });
+                return res.json({ success: true, user_id: this.lastID });
+            });
+        });
+    });
+});
+
+app.post('/login', (req, res) => {
+    const { email, password } = req.body;
+
+    db.get(`SELECT * FROM Users WHERE email = ? AND password = ?`, [email, password], (err, row) => {
+        if (err) return res.status(500).json({ error: "Database error" });
+        if (!row) return res.status(400).json({ error: "Invalid email or password" });
+
+        // If found, return user data (excluding password for safety)
+        const user = {
+            user_id: row.user_id,
+            first_name: row.first_name,
+            is_admin: row.is_admin,
+            guild_id: row.guild_id
+        };
+        res.json({ success: true, user });
+    });
+});
+
+app.post('/login', (req, res) => {
+    console.log("Login attempt:", req.body);
+    // ...
 });
 
 // Start server
