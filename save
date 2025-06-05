@@ -2,10 +2,7 @@ const express = require("express");
 const path = require("path");
 const sqlite3 = require("sqlite3").verbose();
 const bcrypt = require('bcrypt');
-const jwt = require('jsonwebtoken');
 const app = express();
-
-const JWT_SECRET = "your_jwt_secret_key"; // Replace with a secure key in production
 
 // Middleware
 app.use(express.static(path.join(__dirname, "public")));
@@ -56,27 +53,50 @@ app.get('/quests', (req, res) => {
     });
 });
 
-// Middleware to verify JWT token and extract user_id
-const authenticateToken = (req, res, next) => {
-    const authHeader = req.headers['authorization'];
-    const token = authHeader && authHeader.split(' ')[1];
-    if (!token) return res.status(401).json({ error: "Token missing" });
+app.post('/complete-quest', (req, res) => {
+    const { user_id, quest_id } = req.body;
 
-    jwt.verify(token, JWT_SECRET, (err, user) => {
-        if (err) return res.status(403).json({ error: "Invalid token" });
-        req.user_id = user.user_id;
-        next();
+    // Step 1: Get quest point value
+    db.get(`SELECT points FROM Quests WHERE quest_id = ?`, [quest_id], (err, quest) => {
+        if (err || !quest) return res.status(400).json({ error: "Invalid quest" });
+
+        const points = quest.points;
+        const date_completed = new Date().toISOString();
+
+        // Step 2: Insert into PointLogger
+        db.run(`INSERT INTO PointLogger (user_id, quest_id, points_earned, date_completed)
+                VALUES (?, ?, ?, ?)`, [user_id, quest_id, points, date_completed], function(err) {
+
+            if (err) return res.status(500).json({ error: "Failed to log completion" });
+
+            // Step 3: Update user's personal points
+            db.run(`UPDATE Users SET points = points + ? WHERE user_id = ?`,
+                [points, user_id], function(err) {
+                if (err) return res.status(500).json({ error: "Failed to update user points" });
+
+                // Step 4: Get user's guild
+                db.get(`SELECT guild_id FROM Users WHERE user_id = ?`, [user_id], (err, userRow) => {
+                    if (err || !userRow) return res.status(500).json({ error: "User not found" });
+
+                    // Step 5: Update guild's points
+                    db.run(`UPDATE Guilds SET total_points = total_points + ? WHERE guild_id = ?`,
+                        [points, userRow.guild_id], function(err) {
+                        if (err) return res.status(500).json({ error: "Failed to update guild points" });
+
+                        // ✅ All done!
+                        res.json({ message: "Quest completed successfully", pointsEarned: points });
+                    });
+                });
+            });
+        });
     });
-};
+});
 
-app.post('/complete-quest', authenticateToken, (req, res) => {
-    console.log("Received /complete-quest request with user_id:", req.user_id, "and body:", req.body);
-    const user_id = req.user_id;
-    const { quest_id } = req.body;
+app.post('/complete-quest', (req, res) => {
+    const { user_id, quest_id, points } = req.body;
 
-    if (!quest_id) {
-        console.log("Missing quest_id in /complete-quest request body");
-        return res.status(400).json({ error: "Missing quest_id" });
+    if (!user_id || !quest_id || !points) {
+        return res.status(400).json({ error: "Missing required fields" });
     }
 
     // Check if quest was already completed
@@ -85,48 +105,21 @@ app.post('/complete-quest', authenticateToken, (req, res) => {
             return res.status(400).json({ error: "Quest already completed" });
         }
 
-        // Get quest points
-        db.get(`SELECT points FROM Quests WHERE quest_id = ?`, [quest_id], (err, quest) => {
-            if (err || !quest) {
-                return res.status(400).json({ error: "Invalid quest" });
-            }
+        db.serialize(() => {
+            // 1. Log the quest
+            db.run(`INSERT INTO QuestCompletions (user_id, quest_id) VALUES (?, ?)`, [user_id, quest_id]);
 
-            const points = quest.points;
+            // 2. Update user points
+            db.run(`UPDATE Users SET points = points + ? WHERE user_id = ?`, [points, user_id]);
 
-            db.serialize(() => {
-                // 1. Log the quest
-                db.run(`INSERT INTO QuestCompletions (user_id, quest_id) VALUES (?, ?)`, [user_id, quest_id], function(err) {
-                    if (err) {
-                        console.error("Failed to log quest completion:", err.message);
-                        return res.status(500).json({ error: "Failed to log completion" });
-                    }
-
-                    // 2. Update user points
-                    db.run(`UPDATE Users SET total_points = total_points + ? WHERE user_id = ?`, [points, user_id], function(err) {
-                        if (err) {
-                            console.error("Failed to update user points:", err.message);
-                            return res.status(500).json({ error: "Failed to update user points" });
-                        }
-
-                        // 3. Update guild points
-                        db.get(`SELECT guild_id FROM Users WHERE user_id = ?`, [user_id], (err, row) => {
-                            if (err || !row) {
-                                console.error("Failed to get user's guild:", err ? err.message : "No guild found");
-                                return res.status(500).json({ error: "Failed to get user's guild" });
-                            }
-
-                            db.run(`UPDATE Guilds SET total_points = total_points + ? WHERE guild_id = ?`, [points, row.guild_id], function(err) {
-                                if (err) {
-                                    console.error("Failed to update guild points:", err.message);
-                                    return res.status(500).json({ error: "Failed to update guild points" });
-                                }
-
-                                res.json({ success: true, pointsEarned: points });
-                            });
-                        });
-                    });
-                });
+            // 3. Update guild points
+            db.get(`SELECT guild_id FROM Users WHERE user_id = ?`, [user_id], (err, row) => {
+                if (row) {
+                    db.run(`UPDATE Guilds SET total_points = total_points + ? WHERE guild_id = ?`, [points, row.guild_id]);
+                }
             });
+
+            res.json({ success: true });
         });
     });
 });
@@ -177,38 +170,24 @@ app.post('/register', (req, res) => {
 app.post('/login', (req, res) => {
     const { email, password } = req.body;
 
-    db.get(`SELECT * FROM Users WHERE email = ?`, [email], (err, row) => {
+    db.get(`SELECT * FROM Users WHERE email = ? AND password = ?`, [email, password], (err, row) => {
         if (err) return res.status(500).json({ error: "Database error" });
         if (!row) return res.status(400).json({ error: "Invalid email or password" });
 
-        bcrypt.compare(password, row.password, (err, result) => {
-            if (err) return res.status(500).json({ error: "Error comparing passwords" });
-            if (!result) return res.status(400).json({ error: "Invalid email or password" });
-
-            const user = {
-                user_id: row.user_id,
-                first_name: row.first_name,
-                is_admin: row.is_admin,
-                guild_id: row.guild_id
-            };
-
-            // Generate JWT token
-            const token = jwt.sign({ user_id: user.user_id }, JWT_SECRET, { expiresIn: '1h' });
-
-            res.json({ success: true, user, token });
-        });
+        // If found, return user data (excluding password for safety)
+        const user = {
+            user_id: row.user_id,
+            first_name: row.first_name,
+            is_admin: row.is_admin,
+            guild_id: row.guild_id
+        };
+        res.json({ success: true, user });
     });
 });
 
 app.post('/login', (req, res) => {
     console.log("Login attempt:", req.body);
     // ...
-});
-
-// Global error handler middleware
-app.use((err, req, res, next) => {
-    console.error("Unhandled error:", err);
-    res.status(500).json({ error: "Internal Server Error" });
 });
 
 // Start server

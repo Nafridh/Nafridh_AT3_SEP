@@ -1,56 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | Book Nest</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Login - Booknest</title>
     <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-    <main>
-        <h1>Login to Book Nest</h1>
+    <div class="login-container">
+        <h1>Login</h1>
         <form id="loginForm">
             <label for="email">Email:</label>
-            <input type="email" id="email" required>
-
+            <input type="email" id="email" name="email" required />
             <label for="password">Password:</label>
-            <input type="password" id="password" required>
-
+            <input type="password" id="password" name="password" required />
             <button type="submit">Login</button>
         </form>
-        <li><a href="register.html">Register</a></li>
-        <p id="loginMessage" style="color: red;"></p>
-    </main>
-
-    <script type="module">
-        const form = document.getElementById('loginForm');
-        const message = document.getElementById('loginMessage');
-
-        form.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-
-            const res = await fetch('/login', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ email, password })
-            });
-
-            const data = await res.json();
-            if (data.success) {
-                // Save user info in localStorage
-                localStorage.setItem('user_id', data.user.user_id);
-                localStorage.setItem('first_name', data.user.first_name);
-                localStorage.setItem('is_admin', data.user.is_admin);
-                localStorage.setItem('guild_id', data.user.guild_id);
-
-                // Redirect based on role
-                window.location.href = data.user.is_admin ? "admin.html" : "index.html";
-            } else {
-                message.textContent = data.error || "Login failed.";
-            }
-        });
-    </script>
+        <p id="errorMsg" class="error-message"></p>
+    </div>
+    <script src="js/login.js"></script>
 </body>
 </html>

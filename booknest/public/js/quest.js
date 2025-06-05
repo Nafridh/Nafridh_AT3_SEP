@@ -7,8 +7,6 @@ document.addEventListener("DOMContentLoaded", () => {
     const completeBtn = document.getElementById('completeQuestBtn');
 
     let selectedQuestId = null;
-    const userId = 1; // TEMP user
-
     // Load and display quests
     fetch('/quests')
         .then(res => res.json())
@@ -47,10 +45,19 @@ document.addEventListener("DOMContentLoaded", () => {
     completeBtn.onclick = () => {
         if (!selectedQuestId) return;
 
+        const token = localStorage.getItem('token');
+        if (!token) {
+            alert('You must be logged in to complete a quest.');
+            return;
+        }
+
         fetch('/complete-quest', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ user_id: userId, quest_id: selectedQuestId })
+            headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + token
+            },
+            body: JSON.stringify({ quest_id: selectedQuestId })
         })
         .then(res => res.json())
         .then(data => {
