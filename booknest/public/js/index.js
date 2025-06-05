@@ -17,6 +17,7 @@ app.get("/", (req, res) => {
 
 document.addEventListener('DOMContentLoaded', () => {
     const user = JSON.parse(localStorage.getItem('user'));
+    console.log("Loaded user from localStorage:", user);
     if (user && user.first_name) {
     document.getElementById('navUserName').textContent = `Hello, ${user.first_name}`;
         } else {
@@ -40,6 +41,69 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
+
+document.addEventListener('DOMContentLoaded', async () => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    const token = localStorage.getItem('token');
+
+    if (!user || !token) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    // Greet user
+    document.getElementById('firstName').textContent = user.first_name;
+    document.getElementById('navUserName').textContent = `Hello, ${user.first_name}`;
+
+    // Logout
+    document.getElementById('logoutBtn').addEventListener('click', () => {
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+        window.location.href = 'login.html';
+    });
+
+    // Load Poll Winner
+    try {
+        const res = await fetch('/api/poll-winner');
+        const winner = await res.json();
+        document.getElementById('winnerCard').innerHTML = `
+            <img src="${winner.cover_url}" alt="${winner.title}" style="max-width:100px;" />
+            <h4>${winner.title}</h4>
+            <p><em>${winner.author}</em></p>
+            <p>Votes: ${winner.votes}</p>
+        `;
+    } catch (err) {
+        document.getElementById('winnerCard').textContent = 'No recent winner.';
+    }
+
+    // Load user points
+    document.getElementById('userPoints').textContent = user.total_points || 0;
+
+    // Load top guild
+    try {
+        const res = await fetch('/api/top-guild');
+        const guild = await res.json();
+        document.getElementById('topGuild').textContent = `${guild.name} – ${guild.points} points`;
+    } catch (err) {
+        document.getElementById('topGuild').textContent = 'No data yet.';
+    }
+
+    // Load quests preview (first 3)
+    try {
+        const res = await fetch('/api/quests');
+        const quests = await res.json();
+        const list = document.getElementById('questList');
+        list.innerHTML = '';
+        quests.slice(0, 3).forEach(q => {
+            const li = document.createElement('li');
+            li.textContent = q.title;
+            list.appendChild(li);
+        });
+    } catch (err) {
+        document.getElementById('questList').textContent = 'Unable to load quests.';
+    }
+});
+
 
 // Connect to database
 const db = new sqlite3.Database("./datasource.db", sqlite3.OPEN_READWRITE, (err) => {

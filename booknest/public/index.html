@@ -1,66 +1,52 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta http-equiv="X-UA-Compatible" content="ie=edge" />
-<meta http-equiv="Content-Security-Policy" content="script-src 'self';">
+<title>BookNest Dashboard</title>
 <link rel="stylesheet" href="css/style.css" />
-<title>Book Nest - Dashboard</title>
-<link rel="manifest" href="manifest.json" />
-<link rel="icon" type="image/x-icon" href="images/favicon.png">
+<link rel="icon" href="images/favicon.png" />
 <meta name="theme-color" content="#14E6DD" />
 </head>
-
 <body>
-    <main>
-        <nav>
-        <img src="images/logo.png" alt="Book Nest Logo"/>
-        <h1>Book Nest</h1>
-        <ul class="topnav">
-            <li><a href="index.html">Dashboard</a></li>
-            <li><a href="voting.html">Voting</a></li>
-            <li><a href="quest.html">Quests</a></li>
-            <li><a href="leaderboard.html">Guilds</a></li>
-            <div class="user-nav">
-        <span id="navUserName" class="username"></span>
-        <li><a href="login.html">Log Out</a></li>
-        </div>
-        </ul>
-        </div>
-        </nav>
+<nav>
+    <img src="images/logo.png" alt="Book Nest Logo" />
+    <h1>Book Nest</h1>
+    <ul class="topnav">
+    <li><a href="index.html">Dashboard</a></li>
+    <li><a href="voting.html">Voting</a></li>
+    <li><a href="quest.html">Quests</a></li>
+    <li><a href="leaderboard.html">Guilds</a></li>
+    <li><a href="leaderboard.html">Logout</a></li>
+    <span id="navUserName" class="username"></span>
+    </ul>
+</nav>
 
-        <h2>Welcome!</h2>
-        <div class="container">
-            <h3>June Pick</h3>
-            <a href="voting.html">Vote July</a>
-            <h3>New Quests</h3>
-            <a href="quest.html">Complete Quests</a>
-            <h3>Total Contribution</h3>
-            <h4 id="userPoints">0</h4>
-            <h3>Top House</h3>
-            <h4>Blazing Guardians - 20</h4>
-            <a href="leaderboard.html">View Leaderboard</a>
-        </div>
-    </main>
-    <script type="module" src="js/app.js"></script>
-    <script type="module" src="js/index.js"></script>
-    <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const user = JSON.parse(localStorage.getItem('user'));
+<main class="dashboard">
+    <h2>Welcome back, <span id="firstName"></span>!</h2>
 
-        if (user && user.first_name) {
-        document.getElementById('navUserName').textContent = `Hello, ${user.first_name}`;
-        } else {
-        window.location.href = 'login.html';
-        }
+    <section id="poll-winner">
+    <h3>📚 Last Month’s Winner</h3>
+    <div id="winnerCard" class="card">Loading...</div>
+    <a href="voting.html" class="button">Vote for Next Month</a>
+    </section>
 
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-        localStorage.removeItem('user');
-        window.location.href = 'login.html';
-        });
-    });
-    </script>
+    <section id="quest-preview">
+    <h3>🧩 Quests</h3>
+    <ul id="questList">Loading quests...</ul>
+    <a href="quest.html" class="button">Go to Quests</a>
+    </section>
+
+    <section id="user-stats">
+    <h3>⭐ Your Points</h3>
+    <p id="userPoints">0</p>
+
+    <h3>🏆 Leading Guild</h3>
+    <p id="topGuild">Loading...</p>
+    <a href="leaderboard.html" class="button">View Leaderboard</a>
+    </section>
+</main>
+
+<script type="module" src="js/index.js"></script>
 </body>
 </html>
