@@ -108,7 +108,7 @@ app.post('/complete-quest', authenticateToken, (req, res) => {
                     if (!userRow) return res.status(500).json({ error: "Guild lookup failed" });
                     db.run(`UPDATE Guilds SET total_points = total_points + ? WHERE guild_id = ?`, [points, userRow.guild_id]);
                 });
-                db.run(`INSERT INTO PointsLog (user_id, quest_id, points_earned, date_completed) VALUES (?, ?, ?, ?)`,
+                db.run(`INSERT INTO PointsLog (user_id, quest_id, points_awarded, date_completed) VALUES (?, ?, ?, ?)`,
                     [user_id, quest_id, points, date_completed]);
                 res.json({ success: true, pointsEarned: points });
             });
@@ -242,5 +242,5 @@ app.use((err, req, res, next) => {
 
 // Start Server
 app.listen(PORT, () => {
-    console.log(`🚀 BookNest server running at http://localhost:8000`);
+    console.log(`🚀 BookNest serverus running at http://localhost:8000`);
 });

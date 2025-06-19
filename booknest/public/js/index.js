@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const user = JSON.parse(localStorage.getItem('user'));
     console.log("Loaded user from localStorage:", user);
     if (user && user.first_name) {
-    document.getElementById('navUserName').textContent = `Hello, ${user.first_name}`;
+    document.getElementById('navUserName').textContent = `Welcome, ${user.first_name}`;
         } else {
                 window.location.href = 'login.html';
             }

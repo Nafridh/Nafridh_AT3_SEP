@@ -10,7 +10,7 @@
 <title>Book Nest - Guild Leaderboard</title>
 <link rel="manifest" href="manifest.json" />
 <link rel="icon" type="image/x-icon" href="images/favicon.png">
-<meta name="theme-color" content="#14E6DD" />
+<meta name="theme-color" content="#3e210b" />
 </head>
 
 <body>
@@ -23,7 +23,11 @@
         <li><a href="voting.html">Voting</a></li>
         <li><a href="quest.html">Quests</a></li>
         <li><a href="leaderboard.html">Guilds</a></li>
-        <li><a href="login.html">Logout</a></li>
+        <div class="user-nav">
+        <span id="navUserName" class="username"></span>
+        <button id="logoutBtn">Logout</button>
+        </div>
+        <script src="js/nav.js"></script>
         </ul>
         </nav>
         <h2>Guild Leaderboard</h2>
