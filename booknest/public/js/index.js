@@ -76,6 +76,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         document.getElementById('winnerCard').textContent = 'No recent winner.';
     }
 
+// testng load poll winner above too
+
     // Load user points
     document.getElementById('userPoints').textContent = user.total_points || 0;
 

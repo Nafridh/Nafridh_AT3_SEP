@@ -155,6 +155,17 @@ app.get('/api/active-poll', (req, res) => {
     });
 });
 
+app.get("/api/active-poll", (req, res) => {
+    db.get("SELECT * FROM polls WHERE is_active = 1 LIMIT 1", [], (err, poll) => {
+        if (err || !poll) return res.json({});
+
+        db.all("SELECT * FROM books WHERE poll_id = ?", [poll.poll_id], (err2, books) => {
+            if (err2) return res.json({});
+            res.json({ ...poll, books });
+        });
+    });
+});
+
 app.post('/api/vote', authenticateToken, (req, res) => {
     const user_id = req.user_id;
     const { book_id, poll_id } = req.body;
@@ -226,13 +237,36 @@ app.get('/api/top-guild', (req, res) => {
         res.json(row);
     });
 });
+app.get("/api/has-voted/:poll_id", (req, res) => {
+    db.get(
+        "SELECT 1 FROM Votes WHERE user_id = ? AND poll_id = ?",
+        [req.query.user, req.params.poll_id],
+        (_, row) => res.json({ alreadyVoted: !!row })
+    );
+});
 app.get('/api/quests', (req, res) => {
     db.all(`SELECT title FROM Quests ORDER BY created_at DESC LIMIT 5`, (err, rows) => {
         if (err) return res.status(500).json({ error: "Could not fetch quests." });
         res.json(rows);
     });
 });
-
+app.get("/api/past-polls", (_, res) => {
+    const sql = `
+        SELECT p.poll_id, p.title AS poll_title,
+            b.title, b.cover_url
+        FROM Polls p
+        JOIN Books b ON b.book_id =
+            (SELECT book_id FROM Votes
+            WHERE poll_id = p.poll_id
+            GROUP BY book_id
+            ORDER BY COUNT(vote_id) DESC
+            LIMIT 1)
+        WHERE p.is_active = 0
+        ORDER BY p.end_date DESC
+        LIMIT 6;        -- last six polls
+    `;
+    db.all(sql, [], (_, rows) => res.json(rows || []));
+});
 
 // Error Handling
 app.use((err, req, res, next) => {

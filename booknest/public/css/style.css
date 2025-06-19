@@ -61,6 +61,7 @@ transition: transform 0.2s, border-color 0.2s;
 cursor: pointer;
 overflow: hidden;
 background-color: #fdfdfd;
+max-width: 316px;
 }
 
 .book-card:hover {
