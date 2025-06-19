@@ -230,22 +230,27 @@ app.get("/api/poll-winner", (req, res) => {
     });
 });
 app.get('/api/top-guild', (req, res) => {
-    db.get(`SELECT name, points FROM Guilds ORDER BY points DESC LIMIT 1`, (err, row) => {
+    db.get(`SELECT name, total_points as points FROM Guilds ORDER BY total_points DESC LIMIT 1`, (err, row) => {
         if (err || !row) {
             return res.status(404).json({ error: "No top guild found." });
         }
         res.json(row);
     });
 });
-app.get("/api/has-voted/:poll_id", (req, res) => {
+app.get("/api/has-voted", authenticateToken, (req, res) => {
+    const user_id = req.user_id;
+    const poll_id = req.query.poll;
+    if (!poll_id) {
+        return res.status(400).json({ error: "Missing poll id" });
+    }
     db.get(
         "SELECT 1 FROM Votes WHERE user_id = ? AND poll_id = ?",
-        [req.query.user, req.params.poll_id],
+        [user_id, poll_id],
         (_, row) => res.json({ alreadyVoted: !!row })
     );
 });
 app.get('/api/quests', (req, res) => {
-    db.all(`SELECT title FROM Quests ORDER BY created_at DESC LIMIT 5`, (err, rows) => {
+    db.all(`SELECT title FROM Quests ORDER BY quest_id DESC LIMIT 5`, (err, rows) => {
         if (err) return res.status(500).json({ error: "Could not fetch quests." });
         res.json(rows);
     });

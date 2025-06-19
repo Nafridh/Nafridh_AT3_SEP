@@ -54,6 +54,7 @@ async function initVotingPage() {
                 // still load past results + winner section
                 loadResults(poll.poll_id);
                 loadWinner();
+                loadPastPolls()
                 return;
             }
 

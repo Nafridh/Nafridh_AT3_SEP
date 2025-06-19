@@ -11,9 +11,9 @@
 //app.use(express.static(path.join(__dirname, "public")));  // Serve static files
 
 // Serve index.html
-app.get("/", (req, res) => {
-    res.sendFile(path.join(__dirname, "public/index.html"));
-});
+//app.get("/", (req, res) => {
+//    res.sendFile(path.join(__dirname, "public/index.html"));
+//});
 
 document.addEventListener('DOMContentLoaded', () => {
     const user = JSON.parse(localStorage.getItem('user'));
@@ -126,13 +126,13 @@ async function loadPollWinner() {
 
 
 // Connect to database
-const db = new sqlite3.Database("./datasource.db", sqlite3.OPEN_READWRITE, (err) => {
-    if (err) console.error("Database connection error:", err.message);
-    else console.log("✅ Connected to SQLite database.");
-});
+//const db = new sqlite3.Database("./datasource.db", sqlite3.OPEN_READWRITE, (err) => {
+//    if (err) console.error("Database connection error:", err.message);
+//    else console.log("✅ Connected to SQLite database.");
+//});
 
 // Start Server
-const PORT = 8000;
-app.listen(PORT, () => {
-    console.log(`🚀 Server is running on http://localhost:8000/`);
-});
+//const PORT = 8000;
+//app.listen(PORT, () => {
+//    console.log(`🚀 Server is running on http://localhost:8000/`);
+//});
