@@ -8,7 +8,7 @@
 <meta http-equiv="Content-Security-Policy" content="script-src 'self';">
 <link rel="stylesheet" href="css/style.css" />
 <title>Book Nest - Quests</title>
-<link rel="manifest" href="manifest.json" />
+<!-- <link rel="manifest" href="manifest.json" /> -->
 <link rel="icon" type="image/x-icon" href="images/favicon.png">
 <meta name="theme-color" content="#3e210b" />
 </head>
@@ -55,7 +55,7 @@
             </div>
         </div>
         </main>
-    <script type="module" src="js/app.js"></script>
+    <!-- <script type="module" src="js/app.js"></script>
     <script>
     document.addEventListener('DOMContentLoaded', () => {
         const user = JSON.parse(localStorage.getItem('user'));
@@ -71,7 +71,16 @@
         window.location.href = 'login.html';
         });
     });
-    </script>
+    </script> -->
+    <section class="quests">
+    <h2>📋 Available Quests</h2>
+    <ul id="availableList">Loading...</ul>
+</section>
+
+<section class="quests-completed">
+    <h2>✅ Completed Quests</h2>
+    <ul id="completedList">Loading...</ul>
+</section>
     </body>
     
     </html>

@@ -54,31 +54,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Greet user
     document.getElementById('firstName').textContent = user.first_name;
     document.getElementById('navUserName').textContent = `Hello, ${user.first_name}`;
+    console.log("User total points:", user.total_points);
 
     // Logout
     document.getElementById('logoutBtn').addEventListener('click', () => {
         localStorage.removeItem('user');
         localStorage.removeItem('token');
         window.location.href = 'login.html';
-        loadPollWinner(); // here
     });
-
-async function loadPollWinner() {
-    try {
-        const res    = await fetch("/api/poll-winner");
-        const winner = await res.json();
-        if (!winner?.cover_url) return;
-
-        const card = document.getElementById("winnerCard");
-        card.innerHTML = `
-            <img src="${winner.cover_url}"
-                alt="${winner.title}"
-                style="max-width:150px;border-radius:10px" />
-        `;
-    } catch (err) {
-        console.error("loadPollWinner", err);
-    }
-}
 
     // Load Poll Winner
     try {
@@ -93,8 +76,6 @@ async function loadPollWinner() {
     } catch (err) {
         document.getElementById('winnerCard').textContent = 'No recent winner.';
     }
-
-// testng load poll winner above too
 
     // Load user points
     document.getElementById('userPoints').textContent = user.total_points || 0;
@@ -130,6 +111,7 @@ async function loadPollWinner() {
 //    if (err) console.error("Database connection error:", err.message);
 //    else console.log("✅ Connected to SQLite database.");
 //});
+
 
 // Start Server
 //const PORT = 8000;

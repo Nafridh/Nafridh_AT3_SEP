@@ -115,6 +115,37 @@ app.post('/complete-quest', authenticateToken, (req, res) => {
         });
     });
 });
+// Seperating Quest Completion?
+app.get("/api/user-quests/:user_id", (req, res) => {
+    const userId = req.params.user_id;
+
+    const availableQuery = `
+        SELECT * FROM Quests 
+        WHERE quest_id NOT IN (
+            SELECT quest_id FROM QuestCompletions WHERE user_id = ?
+        )
+    `;
+
+    const completedQuery = `
+        SELECT q.* FROM Quests q
+        JOIN QuestCompletions qc ON q.quest_id = qc.quest_id
+        WHERE qc.user_id = ?
+    `;
+
+    const result = { available: [], completed: [] };
+
+    db.all(availableQuery, [userId], (err, available) => {
+        if (err) return res.status(500).json({ error: err.message });
+        result.available = available;
+
+        db.all(completedQuery, [userId], (err2, completed) => {
+            if (err2) return res.status(500).json({ error: err2.message });
+            result.completed = completed;
+
+            res.json(result);
+        });
+    });
+});
 
 // Leaderboard
 app.get("/leaderboard", (req, res) => {

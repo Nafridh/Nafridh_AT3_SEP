@@ -80,3 +80,46 @@ document.addEventListener("DOMContentLoaded", async () => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) return window.location.href = "login.html";
     });
+
+// completion seperation
+document.addEventListener('DOMContentLoaded', async () => {
+    const user = JSON.parse(localStorage.getItem('user'));
+    if (!user) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    try {
+        const res = await fetch(`/api/user-quests/${user.user_id}`);
+        const data = await res.json();
+
+        const availableList = document.getElementById('availableList');
+        const completedList = document.getElementById('completedList');
+
+        availableList.innerHTML = '';
+        completedList.innerHTML = '';
+
+        if (data.available.length === 0) {
+            availableList.innerHTML = '<li>No quests available right now.</li>';
+        } else {
+            data.available.forEach(q => {
+                const li = document.createElement('li');
+                li.textContent = q.title;
+                availableList.appendChild(li);
+            });
+        }
+
+        if (data.completed.length === 0) {
+            completedList.innerHTML = '<li>You haven’t completed any quests yet.</li>';
+        } else {
+            data.completed.forEach(q => {
+                const li = document.createElement('li');
+                li.textContent = q.title;
+                completedList.appendChild(li);
+            });
+        }
+
+    } catch (err) {
+        console.error(err);
+    }
+});
