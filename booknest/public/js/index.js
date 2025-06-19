@@ -1,14 +1,14 @@
-const express = require("express");
-const cors = require("cors");
-const sqlite3 = require("sqlite3").verbose();
-const path = require("path");
+//const express = require("express");
+//const cors = require("cors");
+//const sqlite3 = require("sqlite3").verbose();
+//const path = require("path");
 
-const app = express();
+//const app = express();
 
 // Middleware
-app.use(cors());
-app.use(express.json());
-app.use(express.static(path.join(__dirname, "public")));  // Serve static files
+//app.use(cors());
+//app.use(express.json());
+//app.use(express.static(path.join(__dirname, "public")));  // Serve static files
 
 // Serve index.html
 app.get("/", (req, res) => {
@@ -60,7 +60,25 @@ document.addEventListener('DOMContentLoaded', async () => {
         localStorage.removeItem('user');
         localStorage.removeItem('token');
         window.location.href = 'login.html';
+        loadPollWinner(); // here
     });
+
+async function loadPollWinner() {
+    try {
+        const res    = await fetch("/api/poll-winner");
+        const winner = await res.json();
+        if (!winner?.cover_url) return;
+
+        const card = document.getElementById("winnerCard");
+        card.innerHTML = `
+            <img src="${winner.cover_url}"
+                alt="${winner.title}"
+                style="max-width:150px;border-radius:10px" />
+        `;
+    } catch (err) {
+        console.error("loadPollWinner", err);
+    }
+}
 
     // Load Poll Winner
     try {

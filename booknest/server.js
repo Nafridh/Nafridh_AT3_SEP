@@ -155,16 +155,16 @@ app.get('/api/active-poll', (req, res) => {
     });
 });
 
-app.get("/api/active-poll", (req, res) => {
-    db.get("SELECT * FROM polls WHERE is_active = 1 LIMIT 1", [], (err, poll) => {
-        if (err || !poll) return res.json({});
-
-        db.all("SELECT * FROM books WHERE poll_id = ?", [poll.poll_id], (err2, books) => {
-            if (err2) return res.json({});
-            res.json({ ...poll, books });
-        });
-    });
-});
+//app.get("/api/active-poll", (req, res) => {
+//    db.get("SELECT * FROM polls WHERE is_active = 1 LIMIT 1", [], (err, poll) => {
+//        if (err || !poll) return res.json({});
+//
+//        db.all("SELECT * FROM books WHERE poll_id = ?", [poll.poll_id], (err2, books) => {
+//            if (err2) return res.json({});
+//            res.json({ ...poll, books });
+//        });
+//    });
+//});
 
 app.post('/api/vote', authenticateToken, (req, res) => {
     const user_id = req.user_id;
