@@ -36,46 +36,36 @@
 </aside>
 <body>
     <main>                                   
-<section id="winnerSection">
-    <h3>Winner of Last Poll</h3>
-    <div id="winnerDisplay"></div>
-</section>
+    <div class="poll-summary">
+        <section id="winnerSection">
+            <h3>Winner of Last Poll</h3>
+            <div id="winnerDisplay"></div>
+        </section>
 
-        <section class="voting">
+        <section id="pastPolls">
+            <h3>Past Polls</h3>
+            <ul class="past-grid" id="pastList">Loading…</ul>
+        </section>
+    </div>
+
+    <section class="voting">
         <h2>Vote for the Next Read!</h2>
+        <h3>Your Vote Status</h3>
         <p id="voteMessage" class="vote-message"></p>
         <form id="voteForm">
-        <div id="bookList" class="book-grid"></div>
-        <button type="submit">Submit Vote</button>
+            <div id="bookList" class="book-grid"></div>
+            <button type="submit">Submit Vote</button>
         </form>
     </section>
+
+
     <section class="results">
-    <h3>Current Poll Results</h3>
-    <ul id="resultsList"></ul>
-</section>
-<section id="pastPolls">
-    <h3>📚 Past Polls</h3>
-    <ul class="past-grid" id="pastList">Loading…</ul>
-</section>
+        <h3>Current Poll Results</h3>
+        <ul id="resultsList"></ul>
+    </section>
     </main>
 
     <script type="module" src="js/voting.js"></script>
     <script src="js/nav.js"></script>
-    <!--script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const user = JSON.parse(localStorage.getItem('user'));
-
-        if (user && user.first_name) {
-        document.getElementById('navUserName').textContent = `Hello, ${user.first_name}`;
-        } else {
-        window.location.href = 'login.html';
-        }
-
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-        localStorage.removeItem('user');
-        window.location.href = 'login.html';
-        });
-    });
-    </script> -->
 </body>
 </html>

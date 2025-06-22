@@ -53,6 +53,78 @@
     color: #3a3a2e;
 }
 
+/* Container to join winner and past polls */
+.poll-summary {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    max-width: 1000px;
+    margin: 2rem auto 0 auto;
+    padding: 1rem;
+    background-color: #faf8f3;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(58, 58, 46, 0.1);
+    color: #3a3a2e;
+}
+
+/* Winner section more prominent */
+#winnerSection {
+    flex: 1 1 300px;
+    background-color: #d9e6d2;
+    border: 2px solid #6b4c3b;
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 4px 12px rgba(107, 76, 59, 0.3);
+}
+
+#winnerSection h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: #3a3a2e;
+}
+
+#pastPolls {
+    flex: 2 1 600px;
+    background-color: #faf8f3;
+    border-radius: 12px;
+    padding: 1rem 1.5rem;
+    box-shadow: 0 2px 6px rgba(107, 76, 59, 0.1);
+    color: #3a3a2e;
+}
+
+#pastPolls h3 {
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+/* Heading above voteMessage */
+.voting h3 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: #6b4c3b;
+    font-weight: 600;
+}
+
+/* Adjust voteMessage paragraph */
+.vote-message {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #8a6d4a;
+    margin-bottom: 1rem;
+}
+
+/* Ensure consistent spacing for results section */
+.results {
+    margin-top: 2em;
+    background: #f9f7f1;
+    padding: 1em;
+    border-radius: 8px;
+    color: #3a3a2e;
+    box-shadow: 0 2px 6px rgba(107, 76, 59, 0.1);
+}
+
 .book-grid {
 display: grid;
 grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -556,3 +628,166 @@ nav {
   margin-top: 1rem;
   font-weight: 600;
 }
+/* ───────── VOTING PAGE TUNE-UP ────────────────────────── */
+/* shared “card” look to match quests page */
+.poll-summary,
+.voting,
+.results,
+#winnerSection,
+#pastPolls {
+  background: #faf8f3;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(107, 76, 59, 0.12);
+  color: #3a3a2e;
+}
+
+/* container that wraps Winner + Past Polls */
+.poll-summary {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2rem;
+  max-width: 1000px;
+  margin: 2rem auto 0;
+  padding: 1.5rem 2rem;
+}
+
+/* Winner card more prominent */
+#winnerSection {
+  flex: 1 1 280px;
+  background: #d9e6d2;                       /* soft green highlight */
+  border: 2px solid #6b4c3b;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#winnerSection h3 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/* Past Polls card */
+#pastPolls {
+  flex: 2 1 420px;
+  padding: 1.25rem;
+}
+
+#pastPolls h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+/* Past polls grid items */
+.past-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+/* voting section card */
+.voting {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 1.5rem 2rem;
+}
+
+/* consistent spacing + heading for vote status */
+.voting h2 {
+  margin-top: 0;
+  text-align: center;
+}
+
+.voting h3 {
+  margin: 2rem 0 0.5rem;
+  color: #6b4c3b;
+  font-weight: 600;
+}
+
+/* vote message itself */
+.vote-message {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #8a6d4a;
+  margin-bottom: 1.25rem;
+  text-align: center;
+}
+
+/* book grid matches quests-card feel */
+.book-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1.5rem;
+}
+
+/* results card */
+.results {
+  max-width: 1000px;
+  margin: 2rem auto;
+  padding: 1.5rem 2rem;
+}
+
+.results h3 {
+  margin-top: 0;
+}
+
+/* responsive tweak: stack winner & past polls on small screens */
+@media (max-width: 700px) {
+  .poll-summary {
+    flex-direction: column;
+  }
+}
+
+
+/* Remove dot points in general (Quests & Past Polls) */
+ul {
+  list-style: none;
+  padding-left: 0;
+  margin: 0;
+}
+
+/* Clean grid for past poll items */
+.past-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+  gap: 1.2rem;
+  padding: 0;
+  margin: 0;
+}
+
+/* Individual past poll book cards */
+.past-grid li {
+  background: #faf8f3;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(107, 76, 59, 0.1);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-align: center;
+  padding: 0.5rem;
+}
+
+/* Hover effect */
+.past-grid li:hover {
+  transform: scale(1.03);
+  box-shadow: 0 4px 12px rgba(107, 76, 59, 0.2);
+}
+
+/* Image cover styling */
+.past-grid li img {
+  width: 100%;
+  height: auto;
+  max-height: 240px;
+  object-fit: cover;
+  border-radius: 8px;
+  margin-bottom: 0.5rem;
+}
+
+/* Book title text below the image */
+.past-grid li p {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #3a3a2e;
+  margin: 0;
+}
+

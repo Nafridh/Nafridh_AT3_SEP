@@ -22,7 +22,7 @@ async function initVotingPage() {
 
     function hidePollUI() {
         votingUIroot.innerHTML =
-            "<h2>✅ You’ve already voted in this poll.</h2>";
+            "<h2>Poll completed.</h2>";
     }
 
     async function checkIfVoted(pollId) {
@@ -161,7 +161,7 @@ async function loadResults(pollId = "latest") {
         ul.innerHTML  = "";
         results.forEach((r) => {
             const li = document.createElement("li");
-            li.textContent = `📘 ${r.title} – ${r.votes} vote${
+            li.textContent = ` ${r.title} – ${r.votes} vote${
                 r.votes !== 1 ? "s" : ""
             }`;
             ul.appendChild(li);
