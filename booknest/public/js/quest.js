@@ -1,125 +1,122 @@
-document.addEventListener("DOMContentLoaded", () => {
-    const questList = document.getElementById('questList');
-    const popup = document.getElementById('popup');
-    const popupTitle = document.getElementById('popupTitle');
-    const popupDesc = document.getElementById('popupDescription');
-    const closeBtn = document.getElementById('popupClose');
-    const completeBtn = document.getElementById('completeQuestBtn');
-
-
-    let selectedQuestId = null;
-    // Load and display quests
-    fetch('/quests')
-        .then(res => res.json())
-        .then(data => {
-            if (!data.length) {
-                questList.innerHTML = "<p>No quests available.</p>";
-                return;
-            }
-
-            data.forEach(quest => {
-                const questItem = document.createElement('div');
-                questItem.className = "quest-card";
-                questItem.innerHTML = `<strong>${quest.title}</strong> — ${quest.points} points`;
-                questItem.onclick = () => {
-                    popupTitle.textContent = quest.title;
-                    popupDesc.textContent = quest.description;
-                    selectedQuestId = quest.quest_id;
-                    popup.classList.remove('hidden');
-                    popup.style.display = 'block';
-                };
-                questList.appendChild(questItem);
-            });
-        })
-        .catch(err => {
-            console.error("Error loading quests:", err);
-            questList.innerHTML = "<p>Error loading quests.</p>";
-        });
-
-    // Popup close
-    closeBtn.onclick = () => {
-        popup.classList.add('hidden');
-        popup.style.display = 'none';
-    };
-
-    // Submit quest completion
-    completeBtn.onclick = () => {
-        if (!selectedQuestId) return;
-
-        const token = localStorage.getItem('token');
-        if (!token) {
-            alert('You must be logged in to complete a quest.');
-            return;
-        }
-
-        fetch('/complete-quest', {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + token
-            },
-            body: JSON.stringify({ quest_id: selectedQuestId })
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.pointsEarned) {
-                alert(`✅ Quest completed! You earned ${data.pointsEarned} points.`);
-            } else {
-                alert(`❌ ${data.error || 'Unknown error.'}`);
-            }
-            popup.classList.add('hidden');
-            popup.style.display = 'none';
-        })
-        .catch(err => {
-            console.error("Failed to complete quest:", err);
-        });
-    };
-});
-
+/* public/js/quests.js — one clean copy */
 document.addEventListener("DOMContentLoaded", async () => {
-    const user = JSON.parse(localStorage.getItem("user"));
-    if (!user) return window.location.href = "login.html";
-    });
-
-// completion seperation
-document.addEventListener('DOMContentLoaded', async () => {
-    const user = JSON.parse(localStorage.getItem('user'));
-    if (!user) {
-        window.location.href = 'login.html';
-        return;
+  /* ------------------------------------------------------------ *
+   * 0.  Auth
+   * ------------------------------------------------------------ */
+    const user  = JSON.parse(localStorage.getItem("user"));
+    const token = localStorage.getItem("token");
+    if (!user || !token) {
+    window.location.href = "login.html";
+    return;
     }
 
-    try {
-        const res = await fetch(`/api/user-quests/${user.user_id}`);
-        const data = await res.json();
+  /* ------------------------------------------------------------ *
+   * 1.  DOM handles
+   * ------------------------------------------------------------ */
+    const avail     = document.getElementById("availableList");
+    const done      = document.getElementById("completedList");
+    const popup     = document.getElementById("popup");
+    const popTitle  = document.getElementById("popupTitle");
+    const popDesc   = document.getElementById("popupDescription");
+    const popClose  = document.getElementById("popupClose");
+    const popDone   = document.getElementById("completeQuestBtn");
 
-        const availableList = document.getElementById('availableList');
-        const completedList = document.getElementById('completedList');
+  let currentQuest = null;          // quest displayed in popup
 
-        availableList.innerHTML = '';
-        completedList.innerHTML = '';
+  /* ------------------------------------------------------------ *
+   * 2.  Initial load
+   * ------------------------------------------------------------ */
+    await refreshLists();
 
-        if (data.available.length === 0) {
-            availableList.innerHTML = '<li>No quests available right now.</li>';
-        } else {
-            data.available.forEach(q => {
-                const li = document.createElement('li');
-                li.textContent = q.title;
-                availableList.appendChild(li);
-            });
-        }
+  /* ------------------------------------------------------------ *
+   * 3.  Popup actions
+   * ------------------------------------------------------------ */
+    popClose.onclick = hidePopup;
 
-        if (data.completed.length === 0) {
-            completedList.innerHTML = '<li>You haven’t completed any quests yet.</li>';
-        } else {
-            data.completed.forEach(q => {
-                const li = document.createElement('li');
-                li.textContent = q.title;
-                completedList.appendChild(li);
-            });
-        }
+    popDone.onclick = async () => {
+    if (!currentQuest) return;
 
-    } catch (err) {
-        console.error(err);
+    const res = await fetch("/complete-quest", {
+    method : "POST",
+    headers: { "Content-Type": "application/json",
+                Authorization : `Bearer ${token}` },
+    body   : JSON.stringify({ quest_id: currentQuest.quest_id })
+    });
+    const out = await res.json();
+    if (!res.ok) { alert(out.error || "Failed"); return; }
+
+    moveToCompleted(currentQuest);
+    updatePoints(out.pointsEarned || 0);
+    alert(`✅ Quest completed! (+${out.pointsEarned} pts)`);
+    hidePopup();
+    };
+
+  /* ================  helper functions  ================= */
+
+    async function refreshLists() {
+    const res  = await fetch(`/api/user-quests/${user.user_id}`, {
+        headers:{ Authorization:`Bearer ${token}` }
+    });
+    const data = await res.json();
+    render(data.available, data.completed);
+    }
+
+    function render(availArr, doneArr) {
+    avail.innerHTML = "";
+    done .innerHTML = "";
+
+    if (!availArr.length)
+        avail.innerHTML = "<li>No quests available.</li>";
+    if (!doneArr.length)
+        done.innerHTML  = "<li>You haven’t completed any quests yet.</li>";
+
+    availArr.forEach(q => avail.appendChild(card(q, true)));
+    doneArr .forEach(q => done .appendChild(card(q, false)));
+    }
+
+    function card(q, clickable) {
+    const li = document.createElement("li");
+    li.className = "quest-card";
+    li.textContent = `${q.title} — ${q.points} pts`;
+
+    if (clickable) {
+        li.addEventListener("click", () => {
+        currentQuest         = q;
+        popTitle.textContent = q.title;
+        popDesc.textContent  = q.description;
+        popup.classList.remove("hidden");
+        });
+    } else {
+        li.style.opacity = 0.6;
+    }
+    return li;
+    }
+
+    function hidePopup() {
+    popup.classList.add("hidden");
+    currentQuest = null;
+    }
+
+    function moveToCompleted(q) {
+    // remove from Available
+    [...avail.children].forEach(el => {
+        if (el.textContent.startsWith(q.title)) el.remove();
+    });
+    // add to Completed
+    done.appendChild(card(q, false));
+    if (!avail.children.length)
+        avail.innerHTML = "<li>No quests available.</li>";
+    }
+
+    function updatePoints(inc) {
+    // update local copy + broadcast
+    user.total_points += inc;
+    localStorage.setItem("user", JSON.stringify(user));
+    localStorage.setItem("__points_sync",
+        JSON.stringify({ value:user.total_points, t:Date.now() }));
+
+    // if this page shows points, bump them
+    const pts = document.getElementById("userPoints");
+    if (pts) pts.textContent = user.total_points;
     }
 });

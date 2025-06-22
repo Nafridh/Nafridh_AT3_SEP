@@ -1,120 +1,96 @@
-//const express = require("express");
-//const cors = require("cors");
-//const sqlite3 = require("sqlite3").verbose();
-//const path = require("path");
-
-//const app = express();
-
-// Middleware
-//app.use(cors());
-//app.use(express.json());
-//app.use(express.static(path.join(__dirname, "public")));  // Serve static files
-
-// Serve index.html
-//app.get("/", (req, res) => {
-//    res.sendFile(path.join(__dirname, "public/index.html"));
-//});
-
+/* public/js/index.js — dashboard only */
 document.addEventListener('DOMContentLoaded', () => {
-    const user = JSON.parse(localStorage.getItem('user'));
-    console.log("Loaded user from localStorage:", user);
-    if (user && user.first_name) {
-    document.getElementById('navUserName').textContent = `Welcome, ${user.first_name}`;
-        } else {
-                window.location.href = 'login.html';
-            }
+  /* ------------------------------------------------------------ *
+   * 0.  Auth
+   * ------------------------------------------------------------ */
+const user  = JSON.parse(localStorage.getItem('user'));
+const token = localStorage.getItem('token');
+if (!user || !token) {
+    window.location.href = 'login.html';
+    return;
+}
 
-            document.getElementById('logoutBtn').addEventListener('click', () => {
-                localStorage.removeItem('user');
-                window.location.href = 'login.html';
-            });
-        });
+  /* ------------------------------------------------------------ *
+   * 1.  Static text
+   * ------------------------------------------------------------ */
+document.getElementById('navUserName').textContent  = `Welcome, ${user.first_name}`;
+document.getElementById('firstName').textContent    = user.first_name;
+document.getElementById('userPoints').textContent   = user.total_points ?? 0;
 
-document.addEventListener("DOMContentLoaded", () => {
-    const logoutBtn = document.getElementById("logoutBtn");
-    if (logoutBtn) {
-        logoutBtn.addEventListener("click", () => {
-            // Optional: Clear any stored auth data
-            localStorage.removeItem("user");  // or sessionStorage.clear(), etc.
-            // Redirect to login page
-            window.location.href = "login.html";
-        });
+  /* ------------------------------------------------------------ *
+   * 2.  Logout
+   * ------------------------------------------------------------ */
+document.getElementById('logoutBtn').addEventListener('click', () => {
+    localStorage.removeItem('user');
+    localStorage.removeItem('token');
+    window.location.href = 'login.html';
+});
+
+  /* ------------------------------------------------------------ *
+   * 3.  Live points sync from quests tab
+   * ------------------------------------------------------------ */
+window.addEventListener('storage', (e) => {
+    if (e.key === '__points_sync') {
+    const { value } = JSON.parse(e.newValue);
+    document.getElementById('userPoints').textContent = value;
+
+      // keep local copy in sync so next reload is correct
+    const u = JSON.parse(localStorage.getItem('user'));
+    u.total_points = value;
+    localStorage.setItem('user', JSON.stringify(u));
     }
 });
 
-document.addEventListener('DOMContentLoaded', async () => {
-    const user = JSON.parse(localStorage.getItem('user'));
-    const token = localStorage.getItem('token');
+  /* ------------------------------------------------------------ *
+   * 4.  Dynamic widgets
+   * ------------------------------------------------------------ */
+loadPollWinner();
+loadTopGuild();
+loadQuestPreview();
 
-    if (!user || !token) {
-        window.location.href = 'login.html';
-        return;
+  /* ============ helper functions ============ */
+
+async function loadPollWinner() {
+    try {
+    const res    = await fetch('/api/poll-winner');
+    const winner = await res.json();
+    if (!winner?.cover_url) return;
+
+    document.getElementById('winnerCard').innerHTML = `
+        <img src="${winner.cover_url}" alt="${winner.title}" style="max-width:120px;border-radius:10px" />
+        <h4>${winner.title}</h4>
+        <p><em>${winner.author}</em></p>
+    `;
+    } catch (err) {
+    console.error('Poll‑winner fetch failed', err);
     }
+}
 
-    // Greet user
-    document.getElementById('firstName').textContent = user.first_name;
-    document.getElementById('navUserName').textContent = `Hello, ${user.first_name}`;
-    console.log("User total points:", user.total_points);
+async function loadTopGuild() {
+    try {
+    const res   = await fetch('/api/top-guild');
+    const guild = await res.json();
+    if (!guild?.name) return;
+    document.getElementById('topGuild').textContent =
+        `${guild.name} – ${guild.points} pts`;
+    } catch (err) {
+    document.getElementById('topGuild').textContent = 'No data yet.';
+    }
+}
 
-    // Logout
-    document.getElementById('logoutBtn').addEventListener('click', () => {
-        localStorage.removeItem('user');
-        localStorage.removeItem('token');
-        window.location.href = 'login.html';
+async function loadQuestPreview() {
+    try {
+    const res    = await fetch('/api/quests');
+    const quests = await res.json();
+    const list   = document.getElementById('questList');
+    list.innerHTML = '';
+    quests.slice(0, 3).forEach(q => {
+        const li = document.createElement('li');
+        li.textContent = q.title;
+        list.appendChild(li);
     });
-
-    // Load Poll Winner
-    try {
-        const res = await fetch('/api/poll-winner');
-        const winner = await res.json();
-        document.getElementById('winnerCard').innerHTML = `
-            <img src="${winner.cover_url}" alt="${winner.title}" style="max-width:100px;" />
-            <h4>${winner.title}</h4>
-            <p><em>${winner.author}</em></p>
-            <p>Votes: ${winner.votes}</p>
-        `;
-    } catch (err) {
-        document.getElementById('winnerCard').textContent = 'No recent winner.';
+    } catch {
+    document.getElementById('questList').textContent = 'Unable to load quests.';
     }
-
-    // Load user points
-    document.getElementById('userPoints').textContent = user.total_points || 0;
-
-    // Load top guild
-    try {
-        const res = await fetch('/api/top-guild');
-        const guild = await res.json();
-        document.getElementById('topGuild').textContent = `${guild.name} – ${guild.points} points`;
-    } catch (err) {
-        document.getElementById('topGuild').textContent = 'No data yet.';
-    }
-
-    // Load quests preview (first 3)
-    try {
-        const res = await fetch('/api/quests');
-        const quests = await res.json();
-        const list = document.getElementById('questList');
-        list.innerHTML = '';
-        quests.slice(0, 3).forEach(q => {
-            const li = document.createElement('li');
-            li.textContent = q.title;
-            list.appendChild(li);
-        });
-    } catch (err) {
-        document.getElementById('questList').textContent = 'Unable to load quests.';
-    }
+}
 });
-
-
-// Connect to database
-//const db = new sqlite3.Database("./datasource.db", sqlite3.OPEN_READWRITE, (err) => {
-//    if (err) console.error("Database connection error:", err.message);
-//    else console.log("✅ Connected to SQLite database.");
-//});
-
-
-// Start Server
-//const PORT = 8000;
-//app.listen(PORT, () => {
-//    console.log(`🚀 Server is running on http://localhost:8000/`);
-//});

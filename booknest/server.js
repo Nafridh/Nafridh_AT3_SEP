@@ -286,6 +286,38 @@ app.get('/api/quests', (req, res) => {
         res.json(rows);
     });
 });
+
+/* === Quest lists for a user (available + completed) ================ */
+app.get("/api/user-quests/:user_id", authenticateToken, (req, res) => {
+    const userId = parseInt(req.params.user_id, 10);
+
+    const sqlAvailable = `
+        SELECT * FROM Quests
+        WHERE quest_id NOT IN (
+            SELECT quest_id FROM QuestCompletions WHERE user_id = ?
+        )
+    `;
+    const sqlCompleted = `
+        SELECT q.* FROM Quests q
+        JOIN QuestCompletions qc ON qc.quest_id = q.quest_id
+        WHERE qc.user_id = ?
+        ORDER BY qc.completed_at DESC
+    `;
+
+    const result = { available: [], completed: [] };
+
+    db.all(sqlAvailable, [userId], (err, avail) => {
+        if (err) return res.status(500).json({ error: err.message });
+        result.available = avail;
+
+        db.all(sqlCompleted, [userId], (err2, comp) => {
+            if (err2) return res.status(500).json({ error: err2.message });
+            result.completed = comp;
+            res.json(result);
+        });
+    });
+});
+
 app.get("/api/past-polls", (_, res) => {
     const sql = `
         SELECT p.poll_id, p.title AS poll_title,
