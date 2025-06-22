@@ -1,9 +1,10 @@
 .quest-card {
-    border: 1px solid #ccc;
+    border: 1px solid #6b4c3b; /* dark brown */
     padding: 1rem;
     margin: 0.5rem;
     border-radius: 8px;
-    background-color: #f9f9f9;
+    background-color: #f0efe9; /* light beige */
+    color: #3a3a2e; /* dark olive green */
 }
 
 .popup {
@@ -20,18 +21,21 @@
 }
 
 .popup-content {
-    background: white;
+    background: #f9f7f1; /* off white */
     padding: 20px;
     border-radius: 10px;
     width: 300px;
     max-width: 90%;
     text-align: center;
+    box-shadow: 0 4px 8px rgba(107, 76, 59, 0.3); /* brown shadow */
+    color: #3a3a2e;
 }
 
 .popup-close {
     float: right;
     font-size: 20px;
     cursor: pointer;
+    color: #6b4c3b;
 }
 
 .hidden {
@@ -40,9 +44,13 @@
 
 /* Voting Section Styles */
 .voting {
-padding: 2rem;
-max-width: 1000px;
-margin: auto;
+    padding: 2rem;
+    max-width: 1000px;
+    margin: auto;
+    background-color: #f0efe9;
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(58, 58, 46, 0.1);
+    color: #3a3a2e;
 }
 
 .book-grid {
@@ -53,76 +61,83 @@ margin-top: 2rem;
 }
 
 .book-card {
-position: relative;
-border: 2px solid #ccc;
-border-radius: 12px;
-padding: 1rem;
-transition: transform 0.2s, border-color 0.2s;
-cursor: pointer;
-overflow: hidden;
-background-color: #fdfdfd;
-max-width: 316px;
+    position: relative;
+    border: 2px solid #6b4c3b;
+    border-radius: 12px;
+    padding: 1rem;
+    transition: transform 0.2s, border-color 0.2s;
+    cursor: pointer;
+    overflow: hidden;
+    background-color: #faf8f3;
+    max-width: 316px;
+    color: #3a3a2e;
+    box-shadow: 0 2px 6px rgba(107, 76, 59, 0.15);
 }
 
 .book-card:hover {
-transform: scale(1.03);
-border-color: #f6e8bf;
+    transform: scale(1.03);
+    border-color: #8a6d4a; /* lighter brown */
+    box-shadow: 0 4px 12px rgba(107, 76, 59, 0.3);
 }
 
 .book-card input[type="radio"] {
-display: none;
+    display: none;
 }
 
 .book-card label.vote-btn {
-display: block;
-cursor: pointer;
-text-align: center;
+    display: block;
+    cursor: pointer;
+    text-align: center;
+    color: #3a3a2e;
 }
 
 .book-card img {
-width: 100%;
-height: auto;
-border-radius: 8px;
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
 }
 
 .book-card h3 {
-margin: 0.5rem 0 0.3rem;
-font-size: 1.1rem;
+    margin: 0.5rem 0 0.3rem;
+    font-size: 1.1rem;
 }
 
 .book-card p {
-font-size: 0.9rem;
-color: #555;
+    font-size: 0.9rem;
+    color: #5a5a3f; /* olive green */
 }
 
 .book-card input[type="radio"]:checked + label {
-border: 2px solid #f5f0c5;
-background-color: #eaf4ff;
-border-radius: 12px;
-box-shadow: 0 0 8px rgba(0, 119, 204, 0.3);
+    border: 2px solid #a3b18a; /* soft green */
+    background-color: #d9e6d2; /* light green */
+    border-radius: 12px;
+    box-shadow: 0 0 8px rgba(58, 97, 0, 0.3);
 }
 
 button[type="submit"] {
-margin-top: 2rem;
-background-color: #f5e3b6;
-color: white;
-border: none;
-padding: 0.8rem 1.5rem;
-border-radius: 8px;
-cursor: pointer;
-font-size: 1rem;
-transition: background-color 0.2s ease;
+    margin-top: 2rem;
+    background-color: #6b4c3b; /* dark brown */
+    color: #f0efe9; /* light beige */
+    border: none;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.2s ease;
+    box-shadow: 0 2px 6px rgba(107, 76, 59, 0.4);
 }
 
 button[type="submit"]:hover {
-background-color: #005fa3;
+    background-color: #8a6d4a; /* lighter brown */
 }
 
 .results {
     margin-top: 2em;
-    background: #f9f9f9;
+    background: #f9f7f1;
     padding: 1em;
     border-radius: 8px;
+    color: #3a3a2e;
+    box-shadow: 0 2px 6px rgba(107, 76, 59, 0.1);
 }
 .results ul {
     list-style: none;
@@ -137,13 +152,17 @@ background-color: #005fa3;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 2rem;
     padding: 2rem;
+    background-color: #f0efe9;
+    border-radius: 12px;
+    color: #3a3a2e;
 }
 
 section {
-    background: #f4f4f4;
+    background: #faf8f3;
     border-radius: 10px;
     padding: 1.5rem;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 6px rgba(107, 76, 59, 0.1);
+    color: #3a3a2e;
 }
 
 .card img {
@@ -155,9 +174,103 @@ section {
     display: inline-block;
     margin-top: 1rem;
     padding: 0.5rem 1rem;
-    background: #3e210b;
-    color: black;
+    background: #6b4c3b;
+    color: #f0efe9;
     text-decoration: none;
     border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(107, 76, 59, 0.3);
+    transition: background-color 0.2s ease;
+}
+
+.button:hover {
+    background: #8a6d4a;
+    color: #faf8f3;
+}
+
+/* Navigation Bar Styles */
+nav {
+    background-color: #6b4c3b; /* dark brown */
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: #f0efe9;
+    box-shadow: 0 2px 6px rgba(107, 76, 59, 0.4);
+    border-radius: 0 0 10px 10px;
+    margin-bottom: 1.5rem;
+}
+
+nav img {
+    height: 50px;
+    border-radius: 8px;
+}
+
+nav h1 {
+    font-size: 1.5rem;
+    margin-left: 1rem;
+    flex-grow: 1;
+    color: #f0efe9;
+}
+
+.topnav {
+    list-style: none;
+    display: flex;
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+}
+
+.topnav li a {
+    color: #f0efe9;
+    text-decoration: none;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    transition: background-color 0.3s ease;
+}
+
+.topnav li a:hover {
+    background-color: #8a6d4a; /* lighter brown */
+}
+
+.user-nav {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.username {
+    font-weight: 600;
+    color: #d9e6d2; /* soft green */
+}
+
+#logoutBtn {
+    background-color: #8a6d4a;
+    border: none;
+    color: #f0efe9;
+    padding: 0.4rem 0.8rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: background-color 0.3s ease;
+}
+
+#logoutBtn:hover {
+    background-color: #6b4c3b;
+}
+
+/* Global padding and margin improvements */
+body, main, section, article, .dashboard, .voting, .results, .card, .quest-card {
+    padding: 1rem 2rem;
+    margin-bottom: 1.5rem;
+}
+
+h1, h2, h3, h4, h5, h6, p, ul, li {
+    margin-top: 0;
+    margin-bottom: 1rem;
+}
+
+ul {
+    padding-left: 1.2rem;
 }
 
