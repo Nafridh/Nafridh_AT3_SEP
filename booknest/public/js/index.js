@@ -13,7 +13,7 @@ if (!user || !token) {
   /* ------------------------------------------------------------ *
    * 1.  Static text
    * ------------------------------------------------------------ */
-document.getElementById('navUserName').textContent  = `Welcome, ${user.first_name}`;
+/*document.getElementById('navUserName').textContent  = `Welcome, ${user.first_name}`;*/
 document.getElementById('firstName').textContent    = user.first_name;
 document.getElementById('userPoints').textContent   = user.total_points ?? 0;
 

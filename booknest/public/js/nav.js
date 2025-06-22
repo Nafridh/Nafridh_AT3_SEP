@@ -3,8 +3,19 @@ document.addEventListener("DOMContentLoaded", () => {
     const navUserName = document.getElementById("navUserName");
     const logoutBtn = document.getElementById("logoutBtn");
 
+    // Map guild_id to name
+    const guilds = {
+        1: "Shadow Seekers",
+        2: "Blazing Guardians",
+        3: "Verdant Wanderers",
+        4: "Galaxy Crusaders"
+    };
+
     if (user && navUserName) {
-        navUserName.textContent = `Hello, ${user.first_name}`;
+        const firstName = user.first_name;
+        const guildName = guilds[user.guild_id] || "Unknown Guild";
+
+        navUserName.textContent = `Hello ${firstName} of ${guildName}`;
     }
 
     if (logoutBtn) {

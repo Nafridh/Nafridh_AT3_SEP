@@ -6,22 +6,36 @@
     <title>Book Nest - Voting</title>
     <link rel="stylesheet" href="css/style.css" />
 </head>
+<!-- NEW NAV BAR -->
+    <nav>
+<div class="nav-top">
+    <div class="nav-left">
+    <img src="images/logo.png" alt="Book Nest Logo" />
+    </div>
+</div>
+
+<div class="nav-title">
+    <h1>Book Nest – Voting</h1>
+    <div class="nav-right">
+    <span id="navUserName" class="username"></span>
+    </div>
+</div>
+
+<div class="nav-buttons">
+    <a href="login.html" class="button">Logout</a>
+</div>
+</nav>
+<!-- Sidebar -->
+<aside class="sidebar">
+    <ul class="side-links">
+    <li><a href="index.html">Dashboard</a></li>
+    <li><a href="voting.html" class="active">Voting</a></li>
+    <li><a href="quest.html">Quests</a></li>
+    <li><a href="leaderboard.html">Leaderboard</a></li>
+    </ul>
+</aside>
 <body>
     <main>                                   
-    <nav>
-        <img src="images/logo.png" alt="Book Nest Logo" />
-        <h1>Book Nest - Voting</h1>
-        <ul class="topnav">
-        <li><a href="index.html">Dashboard</a></li>
-        <li><a href="voting.html">Voting</a></li>
-        <li><a href="quest.html">Quests</a></li>
-        <li><a href="leaderboard.html">Guilds</a></li>
-        </ul>
-        <div class="user-nav">
-        <span id="navUserName" class="username"></span>
-        <button id="logoutBtn">Logout</button>
-        </div>
-    </nav>
 <section id="winnerSection">
     <h3>Winner of Last Poll</h3>
     <div id="winnerDisplay"></div>
@@ -46,7 +60,8 @@
     </main>
 
     <script type="module" src="js/voting.js"></script>
-    <script>
+    <script src="js/nav.js"></script>
+    <!--script>
     document.addEventListener('DOMContentLoaded', () => {
         const user = JSON.parse(localStorage.getItem('user'));
 
@@ -61,6 +76,6 @@
         window.location.href = 'login.html';
         });
     });
-    </script>
+    </script> -->
 </body>
 </html>

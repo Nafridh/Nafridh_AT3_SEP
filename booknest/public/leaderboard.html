@@ -12,31 +12,45 @@
 <link rel="icon" type="image/x-icon" href="images/favicon.png">
 <meta name="theme-color" content="#3e210b" />
 </head>
+    <!-- NEW NAV BAR -->
+    <nav>
+<div class="nav-top">
+    <div class="nav-left">
+    <img src="images/logo.png" alt="Book Nest Logo" />
+    </div>
+</div>
+
+<div class="nav-title">
+    <h1>Book Nest – Guild Leaderboard</h1>
+    <div class="nav-right">
+    <span id="navUserName" class="username"></span>
+    </div>
+</div>
+
+<div class="nav-buttons">
+    <a href="login.html" class="button">Logout</a>
+</div>
+</nav>
+<!-- Sidebar -->
+<aside class="sidebar">
+    <ul class="side-links">
+    <li><a href="index.html">Dashboard</a></li>
+    <li><a href="voting.html">Voting</a></li>
+    <li><a href="quest.html">Quests</a></li>
+    <li><a href="leaderboard.html" class="active">Leaderboard</a></li>
+    </ul>
+</aside>
 
 <body>
     <main>
-        <nav>
-        <img src="images/logo.png"/>
-        <h1>Book Nest - Guild Leaderboard</h1>
-        <ul class="topnav">
-        <li><a href="index.html">Dashboard</a></li>
-        <li><a href="voting.html">Voting</a></li>
-        <li><a href="quest.html">Quests</a></li>
-        <li><a href="leaderboard.html">Guilds</a></li>
-        <div class="user-nav">
-        <span id="navUserName" class="username"></span>
-        <button id="logoutBtn">Logout</button>
-        </div>
-        <script src="js/nav.js"></script>
-        </ul>
-        </nav>
-        <h2>Guild Leaderboard</h2>
-        <div class="container">
-            <ul id="leaderboard"></ul>
-            <script src="js/leaderboard.js"></script>
-        </div>
-        </main>
-    <!--<script type="module" src="js/app.js"></script> -->
-    </body>
-    
+    <!-- REST OF THE PAGE -->
+    <h2>Guild Leaderboard</h2>
+    <div class="container">
+        <ul id="leaderboard"></ul>
+        <script src="js/leaderboard.js"></script>
+    </div>
+    </main>
+    <script src="js/nav.js"></script>
+</body>
+
     </html>

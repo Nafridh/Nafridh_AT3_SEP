@@ -8,50 +8,67 @@
 <link rel="icon" href="images/favicon.png" />
 <meta name="theme-color" content="#3e210b" />
 </head>
-<body>
-<nav>
+<!-- NEW NAV BAR -->
+    <nav>
+<div class="nav-top">
+    <div class="nav-left">
     <img src="images/logo.png" alt="Book Nest Logo" />
+    </div>
+</div>
+
+<div class="nav-title">
     <h1>Book Nest</h1>
-    <ul class="topnav">
-    <li><a href="index.html">Dashboard</a></li>
+    <div class="nav-right">
+    <span id="navUserName" class="username"></span>
+    </div>
+</div>
+
+<div class="nav-buttons">
+    <a href="login.html" class="button">Logout</a>
+</div>
+</nav>
+<!-- Sidebar -->
+<aside class="sidebar">
+    <ul class="side-links">
+    <li><a href="index.html" class="active">Dashboard</a></li>
     <li><a href="voting.html">Voting</a></li>
     <li><a href="quest.html">Quests</a></li>
-    <li><a href="leaderboard.html">Guilds</a></li>
-    <li><a href="leaderboard.html">Logout</a></li>
-    <span id="navUserName" class="username"></span>
+    <li><a href="leaderboard.html">Leaderboard</a></li>
     </ul>
-    <div class="user-nav">
-        <span id="navUserName" class="username"></span>
-        <button id="logoutBtn">Logout</button>
-        </div>
-        <script src="js/nav.js"></script>
-</nav>
+</aside>
 
+<body>
+<h2>Check this out, <span id="firstName"></span>!</h2>
+    
 <main class="dashboard">
-    <h2>Welcome back, <span id="firstName"></span>!</h2>
+<div class="dashboard-wrapper">
+    <section class="dashboard">
 
     <section id="poll-winner">
-    <h3>📚 Last Month’s Winner</h3>
+    <h3>Last Month’s Winner</h3>
     <div id="winnerCard" class="card">Loading...</div>
     <a href="voting.html" class="button">Vote for Next Month</a>
     </section>
 
     <section id="quest-preview">
-    <h3>🧩 Quests</h3>
+    <h3>Quests</h3>
     <ul id="questList">Loading quests...</ul>
     <a href="quest.html" class="button">Go to Quests</a>
     </section>
 
     <section id="user-stats">
-    <h3>⭐ Your Points</h3>
+    <h3>Your Points</h3>
     <p id="userPoints">0</p>
 
-    <h3>🏆 Leading Guild</h3>
+    <h3>Leading Guild</h3>
     <p id="topGuild">Loading...</p>
     <a href="leaderboard.html" class="button">View Leaderboard</a>
     </section>
+    </section>
+</div>
 </main>
 
 <script type="module" src="js/index.js"></script>
+<script src="js/nav.js"></script>
 </body>
 </html>
