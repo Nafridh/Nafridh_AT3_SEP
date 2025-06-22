@@ -30,14 +30,16 @@ document.getElementById('logoutBtn').addEventListener('click', () => {
    * 3.  Live points sync from quests tab
    * ------------------------------------------------------------ */
 window.addEventListener('storage', (e) => {
+    console.log("Storage event detected:", e);
     if (e.key === '__points_sync') {
-    const { value } = JSON.parse(e.newValue);
-    document.getElementById('userPoints').textContent = value;
+        const { value } = JSON.parse(e.newValue);
+        console.log("Updating user points to:", value);
+        document.getElementById('userPoints').textContent = value;
 
-      // keep local copy in sync so next reload is correct
-    const u = JSON.parse(localStorage.getItem('user'));
-    u.total_points = value;
-    localStorage.setItem('user', JSON.stringify(u));
+        // keep local copy in sync so next reload is correct
+        const u = JSON.parse(localStorage.getItem('user'));
+        u.total_points = value;
+        localStorage.setItem('user', JSON.stringify(u));
     }
 });
 

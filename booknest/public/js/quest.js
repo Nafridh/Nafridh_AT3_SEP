@@ -36,19 +36,31 @@ document.addEventListener("DOMContentLoaded", async () => {
     popDone.onclick = async () => {
     if (!currentQuest) return;
 
-    const res = await fetch("/complete-quest", {
-    method : "POST",
-    headers: { "Content-Type": "application/json",
-                Authorization : `Bearer ${token}` },
-    body   : JSON.stringify({ quest_id: currentQuest.quest_id })
-    });
-    const out = await res.json();
-    if (!res.ok) { alert(out.error || "Failed"); return; }
+    console.log("Completing quest:", currentQuest);
 
-    moveToCompleted(currentQuest);
-    updatePoints(out.pointsEarned || 0);
-    alert(`✅ Quest completed! (+${out.pointsEarned} pts)`);
-    hidePopup();
+    try {
+        const res = await fetch("/complete-quest", {
+            method : "POST",
+            headers: { "Content-Type": "application/json",
+                        Authorization : `Bearer ${token}` },
+            body   : JSON.stringify({ quest_id: currentQuest.quest_id })
+        });
+        const out = await res.json();
+        if (!res.ok) {
+            console.error("Complete quest failed:", out.error);
+            alert(out.error || "Failed to complete quest");
+            return;
+        }
+
+        console.log("Quest completed successfully:", out);
+        moveToCompleted(currentQuest);
+        updatePoints(out.pointsEarned || 0);
+        alert(`✅ Quest completed! (+${out.pointsEarned} pts)`);
+        hidePopup();
+    } catch (err) {
+        console.error("Error completing quest:", err);
+        alert("Error completing quest. See console for details.");
+    }
     };
 
   /* ================  helper functions  ================= */
@@ -81,9 +93,11 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     if (clickable) {
         li.addEventListener("click", () => {
+        console.log("Quest card clicked:", q);
         currentQuest         = q;
         popTitle.textContent = q.title;
         popDesc.textContent  = q.description;
+        console.log("Showing popup");
         popup.classList.remove("hidden");
         });
     } else {
@@ -93,6 +107,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function hidePopup() {
+    console.log("Hiding popup");
     popup.classList.add("hidden");
     currentQuest = null;
     }
