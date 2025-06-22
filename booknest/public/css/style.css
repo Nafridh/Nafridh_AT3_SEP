@@ -268,6 +268,7 @@ body, main, section, article, .dashboard, .voting, .results, .card, .quest-card 
 body {
     margin-left: 190px; /* slightly larger than sidebar width */
     padding: 2rem;
+    background: linear-gradient(135deg, #f0efe9, #d9e6d2);
 }
     
 h1, h2, h3, h4, h5, h6, p, ul, li {
@@ -466,4 +467,92 @@ nav {
 .side-links li a:hover,
 .side-links li a.active {
     background-color: #8a6d4a;
+}
+
+/* ─── AUTH PAGES ───────────────────── */
+.auth-page {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f0efe9, #d9e6d2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2rem;
+}
+
+.auth-card {
+  background-color: #faf8f3;
+  padding: 2rem 2.5rem;
+  border-radius: 16px;
+  box-shadow: 0 4px 16px rgba(107, 76, 59, 0.2);
+  width: 100%;
+  max-width: 400px;
+  color: #3a3a2e;
+}
+
+.auth-card h1 {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  font-size: 2rem;
+  color: #6b4c3b;
+}
+
+.auth-card form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.auth-card label {
+  font-weight: 600;
+}
+
+.auth-card input,
+.auth-card select {
+  padding: 0.6rem 0.8rem;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background-color: #fff;
+  font-size: 1rem;
+  transition: border 0.2s;
+}
+
+.auth-card input:focus,
+.auth-card select:focus {
+  border-color: #6b4c3b;
+  outline: none;
+}
+
+.auth-card button {
+  padding: 0.75rem;
+  border: none;
+  background-color: #6b4c3b;
+  color: #f0efe9;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.auth-card button:hover {
+  background-color: #8a6d4a;
+}
+
+.auth-card a {
+  display: block;
+  text-align: center;
+  margin-top: 1rem;
+  color: #6b4c3b;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.auth-card a:hover {
+  text-decoration: underline;
+}
+
+.error-message {
+  color: #b00020;
+  text-align: center;
+  margin-top: 1rem;
+  font-weight: 600;
 }

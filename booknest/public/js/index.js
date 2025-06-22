@@ -55,6 +55,7 @@ loadQuestPreview();
 async function loadPollWinner() {
     try {
     const res    = await fetch('/api/poll-winner');
+    console.log('Poll winner response status:', res.status);
     const winner = await res.json();
     if (!winner?.cover_url) return;
 
@@ -71,6 +72,7 @@ async function loadPollWinner() {
 async function loadTopGuild() {
     try {
     const res   = await fetch('/api/top-guild');
+    console.log('Top guild response status:', res.status);
     const guild = await res.json();
     if (!guild?.name) return;
     document.getElementById('topGuild').textContent =
@@ -83,6 +85,7 @@ async function loadTopGuild() {
 async function loadQuestPreview() {
     try {
     const res    = await fetch('/api/quests');
+    console.log('Quest preview response status:', res.status);
     const quests = await res.json();
     const list   = document.getElementById('questList');
     list.innerHTML = '';
