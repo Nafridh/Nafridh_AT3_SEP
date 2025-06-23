@@ -211,3 +211,91 @@ async function loadPastPolls() {
         document.getElementById("pastList").textContent = "Failed to load.";
     }
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+    const isAdmin = localStorage.getItem('is_admin') === "1";
+    if (isAdmin) document.getElementById('admin-poll-panel').style.display = 'block';
+    initPollForm();
+});
+
+function initPollForm() {
+    const booksContainer = document.getElementById('book-options');
+    const addBtn = document.getElementById('add-book');
+    const form = document.getElementById('poll-form');
+    const msg = document.getElementById('poll-msg');
+
+    function createBookInput(index) {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'book-block';
+    wrapper.style = "border:1px solid #ccc; padding:1rem; margin-bottom:1rem;";
+
+    wrapper.innerHTML = `
+    <label>Title:<br><input type="text" name="title" required></label><br>
+    <label>Author:<br><input type="text" name="author" required></label><br>
+    <label>Description:<br><textarea name="description" rows="2"></textarea></label><br>
+    <label>Cover URL:<br><input type="text" name="cover_url"></label><br>
+    `;
+
+    booksContainer.appendChild(wrapper);
+}
+
+  // Add at least 2 books to start
+createBookInput();
+createBookInput();
+
+addBtn.addEventListener('click', () => createBookInput());
+
+form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    msg.textContent = "⏳ Creating...";
+
+    const poll = {
+    title: document.getElementById('poll-title').value.trim(),
+    description: document.getElementById('poll-description').value.trim(),
+    start_date: document.getElementById('poll-start').value,
+    end_date: document.getElementById('poll-end').value,
+    books: []
+    };
+
+    // Extract book data
+    const blocks = document.querySelectorAll('.book-block');
+    blocks.forEach(block => {
+        const book = {
+        title: block.querySelector('[name="title"]').value.trim(),
+        author: block.querySelector('[name="author"]').value.trim(),
+        description: block.querySelector('[name="description"]').value.trim(),
+        cover_url: block.querySelector('[name="cover_url"]').value.trim(),
+        };
+        if (book.title && book.author) poll.books.push(book);
+    });
+
+    if (poll.books.length < 2) {
+        msg.textContent = "❌ Need at least 2 valid books.";
+        return;
+    }
+
+    try {
+        const res = await fetch('/api/polls', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer ' + localStorage.getItem('token')
+        },
+        body: JSON.stringify(poll)
+        });
+
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Unknown error");
+
+        msg.textContent = "Poll created successfully!";
+        form.reset();
+        booksContainer.innerHTML = "";
+        createBookInput();
+        createBookInput();
+
+    } catch (err) {
+        console.error(err);
+        msg.textContent = "❌ " + err.message;
+    }
+    });
+}

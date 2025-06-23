@@ -212,6 +212,53 @@ app.post('/api/vote', authenticateToken, (req, res) => {
         });
     });
 });
+//attempting teacher creating polls
+app.post('/api/polls', authenticateToken, (req, res) => {
+    if (!req.user.is_admin) return res.sendStatus(403);
+
+    const { title, description, start_date, end_date, books } = req.body;
+
+    if (!title || !start_date || !end_date || !Array.isArray(books) || books.length < 2) {
+    return res.status(400).json({ error: "Missing required fields or too few books." });
+    }
+
+    db.serialize(() => {
+    db.run("BEGIN TRANSACTION");
+
+    db.run(
+        `INSERT INTO Polls (title, description, start_date, end_date, is_active)
+        VALUES (?, ?, ?, ?, 1)`,
+        [title, description, start_date, end_date],
+        function (err) {
+        if (err) {
+            db.run("ROLLBACK");
+            return res.status(500).json({ error: err.message });
+        }
+
+        const poll_id = this.lastID;
+
+        const stmt = db.prepare(`
+            INSERT INTO Books (title, author, description, cover_url, poll_id)
+            VALUES (?, ?, ?, ?, ?)
+        `);
+
+        books.forEach(book => {
+            stmt.run(book.title, book.author, book.description, book.cover_url, poll_id);
+        });
+
+        stmt.finalize((err2) => {
+            if (err2) {
+            db.run("ROLLBACK");
+            return res.status(500).json({ error: err2.message });
+            }
+            db.run("COMMIT");
+        res.json({ success: true, poll_id });
+        });
+    }
+    );
+});
+});
+
 
 app.get("/api/poll-results/:poll_id", (req, res) => {
     const poll_id = req.params.poll_id;

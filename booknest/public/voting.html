@@ -67,5 +67,23 @@
 
     <script type="module" src="js/voting.js"></script>
     <script src="js/nav.js"></script>
+
+    <div id="admin-poll-panel" style="display:none; margin-top:3rem; border-top:2px dashed gray; padding-top:2rem;">
+    <h2>Create New Book Poll (Teachers Only)</h2>
+
+    <form id="poll-form">
+    <label>Poll Title:<br><input type="text" id="poll-title" required></label><br><br>
+    <label>Description:<br><textarea id="poll-description"></textarea></label><br><br>
+    <label>Start Date:<br><input type="date" id="poll-start" required></label><br><br>
+    <label>End Date:<br><input type="date" id="poll-end" required></label><br><br>
+
+    <h3>Book Options</h3>
+    <div id="book-options"></div>
+    <button type="button" id="add-book">+ Add Book</button><br><br>
+
+    <button type="submit">Create Poll</button>
+    <span id="poll-msg" style="margin-left:1rem;"></span>
+    </form>
+</div>
 </body>
 </html>
