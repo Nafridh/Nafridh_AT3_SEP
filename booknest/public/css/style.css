@@ -889,3 +889,163 @@ ul {
         transform: scale(1);
     }
 }
+
+/* =============================================================
+   BookNest Colour Theme Only (Preserves Layout)
+   ============================================================= */
+:root {
+  --deep-green: #264c2c;
+  --bright-green: #4b9c53;
+  --light-beige: #f0e7ce;
+  --brown: #5e412f;
+  --gold: #d8b16a;
+  --deep-green-rgba: 38, 76, 44;
+}
+
+/* ONLY update colour hex values below — no layout changes */
+
+body {
+  background: linear-gradient(135deg, #f0e7ce, #d9e6d2);
+  color: #264c2c;
+}
+
+.quest-card,
+.book-card,
+.results,
+.voting,
+.poll-summary,
+#winnerSection,
+#pastPolls,
+.container,
+section,
+.auth-card {
+  background-color: #f0e7ce;
+  border-color: #5e412f;
+  color: #264c2c;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  flex: 1;
+}
+
+button,
+.button,
+#logoutBtn,
+#completeQuestBtn {
+  background-color: #4b9c53;
+  color: #f0e7ce;
+}
+
+button:hover,
+.button:hover,
+#logoutBtn:hover,
+#completeQuestBtn:hover {
+  background-color: #3a7e40;
+}
+
+.popup-content {
+  background-color: #f0e7ce;
+  color: #264c2c;
+  border-color: #5e412f;
+}
+
+#popupClose {
+  color: #5e412f;
+}
+#popupClose:hover {
+  color: #d8b16a;
+}
+
+nav,
+.sidebar {
+  background-color: #5e412f;
+  color: #f0e7ce;
+}
+nav h1,
+.topnav li a {
+  color: #f0e7ce;
+}
+.topnav li a:hover,
+.side-links li a:hover,
+.side-links li a.active {
+  background-color: #d8b16a;
+  color: #264c2c;
+}
+
+#winnerSection {
+  background-color: #d9e6d2;
+}
+
+.past-grid li {
+  background-color: #f0e7ce;
+  border-color: #5e412f;
+}
+.past-grid li:hover {
+  box-shadow: 0 4px 12px rgba(38, 76, 44, 0.2);
+}
+
+input,
+select,
+textarea {
+  border-color: #ccc;
+}
+input:focus,
+select:focus,
+textarea:focus {
+  border-color: #5e412f;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #264c2c;
+}
+h3 {
+  border-bottom: 2px solid #d8b16a;
+}
+
+.vote-message {
+  color: #8a6d4a;
+}
+
+.username {
+  color: #d9e6d2;
+}
+
+.container {
+  background: #f0e7ce; /* Light Beige */
+  color: #264c2c;       /* Deep Green */
+}
+
+#leaderboard li {
+  background: #f0e7ce;
+  border: 1px solid #5e412f; /* Brown */
+  color: #264c2c;
+}
+
+#leaderboard li span.points {
+  color: #4b9c53; /* Bright Green */
+}
+main.dashboard {
+  background-color: #d9e6d2;
+  padding: 2rem;
+  border-radius: 12px;
+}
+
+.dashboard-wrapper {
+  background-color: var(--light-beige);
+  padding: 1rem 2rem;
+  border-radius: 12px;
+}
+
+.dashboard-wrapper section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  margin-bottom: 2rem;
+}
