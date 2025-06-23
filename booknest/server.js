@@ -276,7 +276,9 @@ app.get("/api/poll-results/:poll_id", (req, res) => {
         res.json(rows);
     });
 });
-app.get("/api/poll-winner", (req, res) => {
+app.get('/api/poll-winner', (req, res) => {
+    console.log("Received request for /api/poll-winner");
+
     const pollQuery = `
         SELECT poll_id FROM Polls
         WHERE is_active = 0
@@ -285,9 +287,12 @@ app.get("/api/poll-winner", (req, res) => {
     `;
 
     db.get(pollQuery, [], (err, poll) => {
-        if (err || !poll) {
-            return res.status(404).json({ error: "No past polls found." });
+        console.log("Poll query result:", poll);
+        if (err) {
+            console.error("Poll query error:", err);
+            return res.status(500).json({ error: "DB error on poll query" });
         }
+        if (!poll) return res.status(404).json({ error: "No past polls found." });
 
         const resultsQuery = `
             SELECT b.title, b.author, b.cover_url, COUNT(v.vote_id) AS votes
@@ -300,13 +305,18 @@ app.get("/api/poll-winner", (req, res) => {
         `;
 
         db.get(resultsQuery, [poll.poll_id], (err2, winner) => {
-            if (err2 || !winner) {
-                return res.status(404).json({ error: "No winner found." });
+            console.log("Winner query result:", winner);
+            if (err2) {
+                console.error("Winner query error:", err2);
+                return res.status(500).json({ error: "DB error on vote query" });
             }
+            if (!winner) return res.status(404).json({ error: "No winner found." });
+
             res.json(winner);
         });
     });
 });
+
 app.get('/api/top-guild', (req, res) => {
     db.get(`SELECT name, total_points as points FROM Guilds ORDER BY total_points DESC LIMIT 1`, (err, row) => {
         if (err || !row) {
@@ -370,15 +380,18 @@ app.get("/api/past-polls", (_, res) => {
         SELECT p.poll_id, p.title AS poll_title,
             b.title, b.cover_url
         FROM Polls p
-        JOIN Books b ON b.book_id =
-            (SELECT book_id FROM Votes
+        JOIN Books b ON b.book_id = (
+            SELECT book_id
+            FROM Votes
             WHERE poll_id = p.poll_id
             GROUP BY book_id
             ORDER BY COUNT(vote_id) DESC
-            LIMIT 1)
+            LIMIT 1
+        )
         WHERE p.is_active = 0
-        ORDER BY p.end_date DESC
-        LIMIT 6;        -- last six polls
+        AND p.poll_id != (SELECT MAX(poll_id) FROM Polls WHERE is_active = 0)
+        ORDER BY p.poll_id DESC
+        LIMIT 6;
     `;
     db.all(sql, [], (_, rows) => res.json(rows || []));
 });

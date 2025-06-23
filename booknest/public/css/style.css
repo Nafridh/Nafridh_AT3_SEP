@@ -404,8 +404,11 @@ img {
 .container {
     max-width: 680px;
     margin-inline: auto;    /* centres the block */
+    background: #f8f2e1;
+    border-radius: 10px;
     padding: 1.5rem;
-    background: #d3c5a0;
+    box-shadow: 0 2px 6px rgba(107, 76, 59, 0.1);
+    color: #3a3a2e;
 }
 
 #leaderboard {
@@ -456,7 +459,7 @@ nav {
 }
 
 .nav-left img {
-    height: 48px;
+    height: 85px;
     border-radius: 8px;
 }
 
@@ -786,9 +789,103 @@ ul {
 
 /* Book title text below the image */
 .past-grid li p {
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #3a3a2e;
-  margin: 0;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #3a3a2e;
+    margin: 0;
 }
 
+/* === Popup Overlay === */
+.popup {
+    position: fixed;
+    inset: 0;
+    background: rgba(38, 76, 44, 0.85); /* Deep Green w/ transparency */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    backdrop-filter: blur(4px);
+}
+
+.popup.hidden {
+    display: none;
+}
+
+/* === Popup Card === */
+.popup-content {
+    position: relative;
+    background: #f0e7ce; /* Light Beige */
+    color: #264c2c;       /* Deep Green text */
+    border: 4px solid #5e412f; /* Brown border */
+    border-radius: 16px;
+    padding: 2rem;
+    max-width: 420px;
+    width: 90%;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
+    animation: popFade 0.3s ease-out;
+    font-family: 'Georgia', serif;
+}
+
+/* === Title === */
+.popup-content h3 {
+    margin-top: 0;
+    color: #264c2c;
+    font-size: 1.4rem;
+    border-bottom: 2px solid #d8b16a; /* Golden Accent */
+    padding-bottom: 0.5rem;
+}
+
+/* === Description === */
+.popup-content p {
+    font-size: 1rem;
+    line-height: 1.5;
+    margin-top: 1rem;
+}
+
+/* === Close Button === */
+#popupClose {
+    position: absolute;
+    top: 0.75rem;
+    right: 1rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    color: #5e412f;
+    transition: transform 0.2s;
+}
+
+#popupClose:hover {
+    transform: scale(1.2);
+    color: #d8b16a;
+}
+
+/* === Quest Completion Button === */
+#completeQuestBtn {
+    margin-top: 1.5rem;
+    padding: 0.75rem 1.5rem;
+    background-color: #4b9c53; /* Bright Green */
+    color: #f0e7ce;            /* Beige text */
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+#completeQuestBtn:hover {
+    background-color: #3a7e40; /* Slightly darker green */
+    transform: scale(1.05);
+}
+
+/* === Pop-in Animation === */
+@keyframes popFade {
+    from {
+        opacity: 0;
+        transform: scale(0.9);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}

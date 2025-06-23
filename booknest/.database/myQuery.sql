@@ -43,3 +43,26 @@ VALUES
 ('1984', 'George Orwell', 'A dystopian novel about totalitarianism.', 'images/1984.jpg', 2),
 ('To Kill a Mockingbird', 'Harper Lee', 'A story about justice and racial tension.', 'images/mockingbird.jpg', 2),
 ('Pride and Prejudice', 'Jane Austen', 'A romantic novel about manners and marriage.', 'images/pride.jpg', 2);
+
+SELECT poll_id, title, is_active, start_date, end_date
+FROM Polls
+WHERE is_active = 0
+ORDER BY poll_id DESC
+LIMIT 1;
+
+SELECT b.book_id, b.title, b.author, COUNT(v.vote_id) AS votes
+FROM Votes v
+JOIN Books b ON v.book_id = b.book_id
+WHERE v.poll_id = (
+SELECT poll_id FROM Polls WHERE is_active = 0 ORDER BY poll_id DESC LIMIT 1
+)
+GROUP BY v.book_id
+ORDER BY votes DESC;
+
+SELECT poll_id, title, is_active, start_date, end_date, chosen_book_id_
+FROM Polls
+ORDER BY poll_id DESC;
+
+SELECT poll_id, COUNT(*) AS votes
+FROM Votes
+GROUP BY poll_id;
