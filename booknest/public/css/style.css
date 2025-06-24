@@ -224,7 +224,7 @@ button[type="submit"]:hover {
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 2rem;
     padding: 2rem;
-    background-color: #f0efe9;
+    background-color: #f0e0b5;
     border-radius: 12px;
     color: #3a3a2e;
 }
@@ -1048,4 +1048,57 @@ main.dashboard {
   justify-content: center;
   text-align: center;
   margin-bottom: 2rem;
+}
+
+/* Make quest list items look clickable */
+#availableList li,
+#completedList li {
+  cursor: pointer;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
+  background-color: #f0e7ce; /* light beige */
+  border: 1px solid #5e412f; /* brown border */
+  margin-bottom: 0.6rem;
+  color: #264c2c; /* deep green text */
+  list-style: none;
+}
+
+/* Hover and focus effect */
+#availableList li:hover,
+#completedList li:hover,
+#availableList li:focus,
+#completedList li:focus {
+  background-color: #4b9c53; /* bright green */
+  color: #f0e7ce; /* light beige text */
+  box-shadow: 0 4px 8px rgba(38, 76, 44, 0.4);
+  transform: scale(1.03);
+  outline: none;
+}
+
+/* Add keyboard accessibility focus */
+#availableList li:focus-visible,
+#completedList li:focus-visible {
+  outline: 2px solid #d8b16a; /* golden accent */
+  outline-offset: 2px;
+}
+
+/* Popup Mark as Completed button */
+#completeQuestBtn {
+  cursor: pointer;
+  background-color: #4b9c53; /* bright green */
+  color: #f0e7ce; /* light beige */
+  border: none;
+  padding: 0.6rem 1.2rem;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: background-color 0.3s ease;
+  margin-top: 1rem;
+  display: inline-block;
+}
+
+#completeQuestBtn:hover,
+#completeQuestBtn:focus {
+  background-color: #264c2c; /* deep green */
+  outline: none;
 }
