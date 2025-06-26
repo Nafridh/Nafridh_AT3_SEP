@@ -3,9 +3,6 @@
 document.addEventListener("DOMContentLoaded", initVotingPage);
 
 async function initVotingPage() {
-    /* ------------------------------------------------------------------ *
-     * 0. Auth guard
-     * ------------------------------------------------------------------ */
     const user  = JSON.parse(localStorage.getItem("user"));
     const token = localStorage.getItem("token");
     if (!user || !token) {
@@ -13,9 +10,6 @@ async function initVotingPage() {
         return;
     }
 
-    /* ------------------------------------------------------------------ *
-     * 1. Helpers
-     * ------------------------------------------------------------------ */
     const $            = (id) => document.getElementById(id);
     const voteMessage  = $("voteMessage");
     const votingUIroot = document.querySelector(".voting");
@@ -34,9 +28,6 @@ async function initVotingPage() {
         return data.alreadyVoted;
     }
 
-    /* ------------------------------------------------------------------ *
-     * 2. Load active poll
-     * ------------------------------------------------------------------ */
     let currentPoll = null;
 
     try {
@@ -90,9 +81,6 @@ async function initVotingPage() {
         voteMessage.textContent = "❌ Failed to load poll.";
     }
 
-    /* ------------------------------------------------------------------ *
-     * 3. Submit handler
-     * ------------------------------------------------------------------ */
     $("voteForm").addEventListener("submit", async (e) => {
         e.preventDefault();
         if (!currentPoll) return;
@@ -141,18 +129,10 @@ async function initVotingPage() {
         }
     });
 
-    /* ------------------------------------------------------------------ *
-     * 4. Always show results / winner + past polls
-     * ------------------------------------------------------------------ */
     loadResults();    // latest closed poll
     loadWinner();
     loadPastPolls();
 }
-
-/* ---------------------------------------------------------------------- *
- *  Helper sections (results, winner, past polls)
- * ---------------------------------------------------------------------- */
-
 async function loadResults(pollId = "latest") {
     try {
         const res     = await fetch(`/api/poll-results/${pollId}`);

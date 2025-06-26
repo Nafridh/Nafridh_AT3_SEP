@@ -1,8 +1,6 @@
 /* public/js/quests.js — one clean copy */
 document.addEventListener("DOMContentLoaded", async () => {
-  /* ------------------------------------------------------------ *
-   * 0.  Auth
-   * ------------------------------------------------------------ */
+
     const user  = JSON.parse(localStorage.getItem("user"));
     const token = localStorage.getItem("token");
     if (!user || !token) {
@@ -10,9 +8,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     return;
     }
 
-  /* ------------------------------------------------------------ *
-   * 1.  DOM handles
-   * ------------------------------------------------------------ */
     const avail     = document.getElementById("availableList");
     const done      = document.getElementById("completedList");
     const popup     = document.getElementById("popup");
@@ -23,14 +18,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   let currentQuest = null;          // quest displayed in popup
 
-  /* ------------------------------------------------------------ *
-   * 2.  Initial load
-   * ------------------------------------------------------------ */
     await refreshLists();
 
-  /* ------------------------------------------------------------ *
-   * 3.  Popup actions
-   * ------------------------------------------------------------ */
     popClose.onclick = hidePopup;
 
     popDone.onclick = async () => {

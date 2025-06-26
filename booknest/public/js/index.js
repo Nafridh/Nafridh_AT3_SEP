@@ -1,34 +1,20 @@
 /* public/js/index.js — dashboard only */
 document.addEventListener('DOMContentLoaded', () => {
-  /* ------------------------------------------------------------ *
-   * 0.  Auth
-   * ------------------------------------------------------------ */
 const user  = JSON.parse(localStorage.getItem('user'));
 const token = localStorage.getItem('token');
 if (!user || !token) {
     window.location.href = 'login.html';
     return;
 }
-
-  /* ------------------------------------------------------------ *
-   * 1.  Static text
-   * ------------------------------------------------------------ */
 /*document.getElementById('navUserName').textContent  = `Welcome, ${user.first_name}`;*/
 document.getElementById('firstName').textContent    = user.first_name;
 document.getElementById('userPoints').textContent   = user.total_points ?? 0;
-
-  /* ------------------------------------------------------------ *
-   * 2.  Logout
-   * ------------------------------------------------------------ */
 document.getElementById('logoutBtn').addEventListener('click', () => {
     localStorage.removeItem('user');
     localStorage.removeItem('token');
     window.location.href = 'login.html';
 });
 
-  /* ------------------------------------------------------------ *
-   * 3.  Live points sync from quests tab
-   * ------------------------------------------------------------ */
 window.addEventListener('storage', (e) => {
     console.log("Storage event detected:", e);
     if (e.key === '__points_sync') {
@@ -43,9 +29,6 @@ window.addEventListener('storage', (e) => {
     }
 });
 
-  /* ------------------------------------------------------------ *
-   * 4.  Dynamic widgets
-   * ------------------------------------------------------------ */
 loadPollWinner();
 loadTopGuild();
 loadQuestPreview();
